@@ -1,9 +1,9 @@
 package ar.edu.unq.o3.mixinsLocura.Monstruo
 
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
-import ar.edu.unq.o3.mixinsLocura.investigador.Investigador
+import ar.edu.unq.o3.mixinsLocura.investigador.{ Personaje}
 
-abstract class Monstruo(vidaMonstruo: Double) {
+abstract class Monstruo(vidaMonstruo: Double) extends Personaje {
 
   var habitacionActual: Habitacion = null
 

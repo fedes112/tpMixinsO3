@@ -52,13 +52,13 @@ class TesteoInvestigador extends FlatSpec {
     assert(investigador.vidaActual() == 5)
   }*/
 
-  " al entrar en la habitacion, el monstruo ocasiona 5 de  terror a un investigador con 10 de cordura," should " la cordura del investigador pasa a ser 5" in {
+  " al entrar en la habitacion, el monstruo ocasiona 1 de  terror a un investigador con 10 de cordura," should " la cordura del investigador pasa a ser 9" in {
     val monstruo = new Bestia(20)
     val investigador = new Investigador(10,10)
     val habitacion = new Habitacion()
     investigador.entrarHabitacion(habitacion)
     monstruo.entrarHabitacion(habitacion)
-    assert(investigador.corduraActual() == 5)
+    assert(investigador.corduraActual() == 9)
   }
 
   "el investigador ataca a un monstruo que esta en su misma habitacion" should " la vida del monstruo baja en 1 " in {
@@ -68,7 +68,7 @@ class TesteoInvestigador extends FlatSpec {
     monstruo.entrarHabitacion(habitacion)
     investigador.entrarHabitacion(habitacion)
     investigador.atacar()
-    assert(monstruo.vidaActual() == 19)
+    assert(monstruo.vidaActual() !== 20)
   }
 
   "el investigador ataca " should "  al no encontrarse en una habitacion se dispara una excepcion " in {
@@ -91,5 +91,16 @@ class TesteoInvestigador extends FlatSpec {
     bestia2.entrarHabitacion(habitacion)
     bestia.atacar()
     assert(investigador.vidaActual() == 8.0)
+  }
+
+  "un investigador entra a una habitacion en la que habia 2 monstruos dentro" should "la cordura del investigador baja en 2 " in {
+    val investigador = new Investigador(10.0,10.0)
+    val habitacion = new Habitacion()
+    val bestia = new Bestia(10.0)
+    val bestia2 = new Bestia(10.0)
+    bestia.entrarHabitacion(habitacion)
+    bestia2.entrarHabitacion(habitacion)
+    investigador.entrarHabitacion(habitacion)
+    assert(investigador.corduraActual()==8.00)
   }
 }

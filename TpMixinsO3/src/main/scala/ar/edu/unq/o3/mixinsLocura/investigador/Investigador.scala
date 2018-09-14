@@ -1,10 +1,12 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
+import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomIntBetween, randomElement, roundInt}
 
 import scala.annotation.meta.{getter, setter}
 
-class Investigador(vidaMax: Double, corduraMax: Double) {
+
+class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje {
 
   var _saludActual : Double = vidaMax
 
@@ -20,7 +22,7 @@ class Investigador(vidaMax: Double, corduraMax: Double) {
   @throws(classOf[NullPointerException])
   def atacar() = {
     try {
-      habitacion().atacarMonstruo(1.0)
+      habitacion().atacarMonstruo(randomIntBetween(1, _saludMaxima.toInt))
     } catch {
         case e: NullPointerException =>
           throw  new NullPointerException("Debes entrar a una habitacion antes de poder atacar!!");
@@ -58,3 +60,5 @@ class Investigador(vidaMax: Double, corduraMax: Double) {
   def estadoDeLocura(): Boolean = _estadoDeLocura
 
 }
+//Es para darle el tipado, hacer los refactors necesarios(subir vida por ej de investigadores y monstrous a esta clase)
+class Personaje{}
