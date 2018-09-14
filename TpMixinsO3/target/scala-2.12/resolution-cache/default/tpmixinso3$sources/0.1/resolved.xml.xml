@@ -4,7 +4,7 @@
 		module="tpmixinso3$sources"
 		revision="0.1"
 		status="integration"
-		publication="20180913172230"
+		publication="20180913202847"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>
