@@ -8,6 +8,8 @@ import scala.annotation.meta.{getter, setter}
 
 
 class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax)  {
+
+
   def corduraMaxima(): Double = {
     return this._corduraMaxima
   }
@@ -53,7 +55,7 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
     if(this._corduraMaxima < (this._corduraActual + cordura) ){
       this._corduraActual = this.corduraMaxima()
     }else{
-    this._corduraActual += cordura}
+      this._corduraActual += cordura}
   }
 
   def perderCordura(cordura: Double) = {
@@ -69,10 +71,28 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 }
 
 class Personaje(vidaMax : Double) {
+
+  def aumentarVidaActual(i: Int) = {
+    if(this.vidaMaxima() < this.vidaActual() + i){
+      this._saludActual =  this.vidaMaxima()
+    }
+    else{
+      this._saludActual += i
+    }
+  }
+
   val _saludMaxima: Double = vidaMax
 
   var _saludActual: Double = vidaMax
 
+
+  def diferenciaDeVida() : Double = {
+    return this.vidaMaxima() - this.vidaActual()
+  }
+
+  def vidaMaxima() : Double = {
+    this._saludMaxima
+  }
 
   def vidaActual(): Double = {
     this._saludActual
@@ -130,5 +150,11 @@ trait Berserker extends Investigador{
       personajeAleatorio.recibirDanio(danioParaMonstruo * 2)
       return personajeAleatorio
     }
+  }
+}
+
+trait Curandero extends  Investigador {
+  def curar() = {
+    super.habitacion().personajeParaCurar().aumentarVidaActual(2)
   }
 }

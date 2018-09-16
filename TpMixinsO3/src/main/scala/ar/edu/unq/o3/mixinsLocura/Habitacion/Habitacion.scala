@@ -8,6 +8,11 @@ import scala.collection.mutable.ArrayBuffer
 
 class Habitacion() {
 
+  def personajeParaCurar(): Investigador = {
+     this.investigadores().maxBy(_.diferenciaDeVida())
+  }
+
+
   def personajeAleatorio() : Personaje = {
    personajesEnHabitacion(randomIntBetween(0, (personajesEnHabitacion.size)))
   }

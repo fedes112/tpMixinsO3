@@ -1,6 +1,6 @@
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Bestia, Monstruo}
-import ar.edu.unq.o3.mixinsLocura.investigador.{ArtistaMarcial, Berserker, Investigador, Maton}
+import ar.edu.unq.o3.mixinsLocura.investigador._
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
@@ -126,14 +126,31 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
     assert(monstruo.vidaActual() == 0)
   }
 
-  "un invesigador berserker ataca a una bestia " should "la vida de la bestia decae por x " in {
-    var investigadorBerserker = new Investigador(5.0, 10.0) with Berserker
-    investigadorBerserker.entrarHabitacion(habitacion)
+  "un invesigador berserker loco ataca a una bestia y un investigador berserker con cordura ataca a otra bestia " should "la vida de la bestia que fue atacada por el investigador loco muere, la otra sigue con vida" in {
+    var investigadorMarcial= new Investigador(3.0, 1.0) with Berserker
+    var bestia2 = new Bestia(2.5)
+    var habitacion2 = new Habitacion()
+    var investigador2 = new Investigador(3.0,10.0) with Berserker
+    investigadorMarcial.entrarHabitacion(habitacion)
+    investigador2.entrarHabitacion(habitacion2)
+    bestia2.entrarHabitacion(habitacion2)
     monstruo.entrarHabitacion(habitacion)
-    investigadorBerserker.perderCordura(9.0)
-    monstruo.recibirDanio(10)
-    investigadorBerserker.atacar()
+    monstruo.recibirDanio(17.5)
+    investigadorMarcial.atacar()
+    investigador2.atacar()
+    assert(bestia2.vidaActual() > 0)
     assert(monstruo.vidaActual() == 0)
   }
+
+  "un invesigador curandero cura a un investigador que tiene 8 puntos de vida actual" should "la vida del investigador normal deberia pasar a ser 10" in {
+    var investigadorCurandero= new Investigador(2.0, 1.0) with Curandero
+    investigadorCurandero.entrarHabitacion(habitacion)
+    investigador.entrarHabitacion(habitacion)
+    investigador.recibirDanio(2.0)
+    assert(investigador.vidaActual() == 8.0)
+    investigadorCurandero.curar()
+    assert(investigador.vidaActual() == 10.0)
+  }
+
 
 }
