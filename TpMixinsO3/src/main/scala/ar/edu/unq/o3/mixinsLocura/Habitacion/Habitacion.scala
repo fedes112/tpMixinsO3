@@ -39,10 +39,6 @@ class Habitacion() {
     personajesEnHabitacion collect { case x:Monstruo=> x }
   }
 
-  def atacarMonstruo(ataqueDelInvestigador: Double) = {
-    this.monstruos().maxBy(_.vidaActual()).recibirDanio(ataqueDelInvestigador)
-  }
-
   def agregarInvestigador(investigador: Investigador) = {
     this.personajesEnHabitacion += investigador
     investigador.perderCordura(cantidadDeMonstruos())

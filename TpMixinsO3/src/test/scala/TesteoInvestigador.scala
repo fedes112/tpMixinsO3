@@ -1,6 +1,6 @@
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Bestia, Monstruo}
-import ar.edu.unq.o3.mixinsLocura.investigador.Investigador
+import ar.edu.unq.o3.mixinsLocura.investigador.{ArtistaMarcial, Berserker, Investigador, Maton}
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
 class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
@@ -98,6 +98,42 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
   "un invesigador con 10 de cordura pierde 10 de cordura " should "la cordura del investigador baja a 0 y entra en estado de locura" in {
     investigador.perderCordura(10.0)
     assert(investigador.estadoDeLocura())
+  }
+
+  "un invesigador maton con 8 de cordura ataca y mata a una bestia" should "la cordura del investigador  se reestablece a su maximo " in {
+    var investigadorMaton = new Investigador(10.0, 10.0) with Maton
+    investigadorMaton.perderCordura(2.0)
+    investigadorMaton.entrarHabitacion(habitacion)
+    monstruo.entrarHabitacion(habitacion)
+    monstruo.recibirDanio(19.0)
+    investigadorMaton.atacar()
+    assert(investigadorMaton.corduraActual() == investigadorMaton.corduraMaxima())
+}
+
+  "un invesigador artista Marcial ataca a una bestia con 1.5 de vida y un investigador normal ataca a otra con 1.5  de vida" should "la vida de la bestia que fue atacada por el investigador marcial es 0, la otra bestia sigue viva " in {
+    var investigadorMarcial= new Investigador(2.0, 10.0) with ArtistaMarcial
+    var bestia2 = new Bestia(1.5)
+    var habitacion2 = new Habitacion()
+    var investigador2 = new Investigador(2.0,10.0)
+    investigadorMarcial.entrarHabitacion(habitacion)
+    investigador2.entrarHabitacion(habitacion2)
+    bestia2.entrarHabitacion(habitacion2)
+    monstruo.entrarHabitacion(habitacion)
+    monstruo.recibirDanio(18.5)
+    investigadorMarcial.atacar()
+    investigador2.atacar()
+    assert(bestia2.vidaActual() > 0)
+    assert(monstruo.vidaActual() == 0)
+  }
+
+  "un invesigador berserker ataca a una bestia " should "la vida de la bestia decae por x " in {
+    var investigadorBerserker = new Investigador(5.0, 10.0) with Berserker
+    investigadorBerserker.entrarHabitacion(habitacion)
+    monstruo.entrarHabitacion(habitacion)
+    investigadorBerserker.perderCordura(9.0)
+    monstruo.recibirDanio(10)
+    investigadorBerserker.atacar()
+    assert(monstruo.vidaActual() == 0)
   }
 
 }

@@ -1,12 +1,16 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
-import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomIntBetween, randomElement, roundInt}
+import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
+import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
 import scala.annotation.meta.{getter, setter}
 
 
-class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax) {
+class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax)  {
+  def corduraMaxima(): Double = {
+    return this._corduraMaxima
+  }
 
 
   var _habitacionActual : Habitacion =  null
@@ -16,12 +20,16 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
 
   @throws(classOf[NullPointerException])
-  def atacar() = {
+  def atacar() : Personaje = {
     if( ! estadoDeLocura()) {
-      habitacion().monstruoAAtacarPorInvestigador().recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
+      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
+      monstruoAAtacar.recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
+      return monstruoAAtacar
     }
     else{
-      habitacion().personajeAleatorio().recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
+      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
+      personajeAleatorio.recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
+      return personajeAleatorio
     }
   }
 
@@ -39,6 +47,13 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
   def corduraActual(): Double = {
     this._corduraActual
+  }
+
+  def recuperarCordura(cordura: Double) = {
+    if(this._corduraMaxima < (this._corduraActual + cordura) ){
+      this._corduraActual = this.corduraMaxima()
+    }else{
+    this._corduraActual += cordura}
   }
 
   def perderCordura(cordura: Double) = {
@@ -67,6 +82,53 @@ class Personaje(vidaMax : Double) {
     this._saludActual -= danio
     if (this.vidaActual() <= 0) {
       this._saludActual = 0
+    }
+  }
+}
+
+
+
+trait Maton extends Investigador{
+
+  override def atacar(): Personaje = {
+    var personajeAtacado = super.atacar()
+    if(personajeAtacado.vidaActual() == 0) {
+      super.recuperarCordura(super.corduraMaxima())
+    }
+    return personajeAtacado
+  }
+}
+
+trait ArtistaMarcial extends Investigador{
+
+  override def atacar(): Personaje = {
+  var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)* 1.5
+    if( ! estadoDeLocura()) {
+    var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
+    monstruoAAtacar.recibirDanio( danioParaMonstruo)
+    return monstruoAAtacar
+    }
+    else{
+    var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
+    personajeAleatorio.recibirDanio(danioParaMonstruo)
+    return personajeAleatorio
+    }
+  }
+}
+
+trait Berserker extends Investigador{
+
+  override def atacar(): Personaje = {
+    var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)
+    if( ! estadoDeLocura()) {
+      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
+      monstruoAAtacar.recibirDanio( danioParaMonstruo)
+      return monstruoAAtacar
+    }
+    else{
+      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
+      personajeAleatorio.recibirDanio(danioParaMonstruo * 2)
+      return personajeAleatorio
     }
   }
 }
