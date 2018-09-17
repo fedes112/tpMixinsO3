@@ -52,7 +52,7 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
 
   /*"el monstruo ataca a un investigador,el investigador recibe 5 de daño y " should " ahora la vida actual del investigador es de 10" in {
     val monstruo = new Bestia(20)
-    val investigador = new Investigador(10,10)
+    val investigador = new Investigador(15,10)
     monstruo.atacar()
     assert(investigador.vidaActual() == 5)
   }*/
@@ -152,5 +152,28 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
     assert(investigador.vidaActual() == 10.0)
   }
 
+  "un invesigador Cobarde ataca a una bestia" should "la corudara pasa a ser 9 " in {
+    var investigadorCobarde= new Investigador(2.0, 10.0) with Cobarde
+    investigadorCobarde.entrarHabitacion(habitacion)
+    investigadorCobarde.atacar()
+    assert(investigadorCobarde.corduraActual() == 9.0)
+  }
+
+  "un invesigador Inestable entra en una habitacion y pierde 1 punto de cordura" should "la vida pasa a ser 9 " in {
+    var investigadorInestable= new Investigador(10.0, 1.0) with Inestable
+    monstruo.entrarHabitacion(habitacion)
+    investigadorInestable.entrarHabitacion(habitacion)
+    assert(investigadorInestable.vidaActual() == 9.0)
+  }
+
+  "un invesigador martir entra en una habitacion y cura la cordura de otro investigador" should "la cordura termina en 10 y la vida en 9" in {
+    var investigadorMartir= new Investigador(10.0, 1.0) with Martir
+    monstruo.entrarHabitacion(habitacion)
+    investigador.entrarHabitacion(habitacion)
+    investigadorMartir.entrarHabitacion(habitacion)
+    investigadorMartir.RecuperarCordura(2)
+    assert(investigadorMartir.vidaActual() == 9.0)
+    assert(investigador.corduraActual() == 10.0)
+  }
 
 }

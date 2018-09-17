@@ -153,8 +153,45 @@ trait Berserker extends Investigador{
   }
 }
 
+trait Cobarde extends Investigador{
+
+  override def atacar(): Personaje = {
+    var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)* 1.5
+    if( ! estadoDeLocura()) {
+      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
+      monstruoAAtacar.recibirDanio( danioParaMonstruo)
+      this.perderCordura(1)
+      return monstruoAAtacar
+    }
+    else{
+      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
+      personajeAleatorio.recibirDanio(danioParaMonstruo)
+      return personajeAleatorio
+    }
+  }
+}
+
+trait Inestable extends Investigador{
+
+  override def perderCordura(cordura: Double) = {
+    this._corduraActual -= cordura
+    this.recibirDanio(1)
+    if( this.corduraActual <= 0) {
+      this._estadoDeLocura = true
+      this._corduraActual = 0
+    }
+  }
+
+}
+
 trait Curandero extends  Investigador {
   def curar() = {
     super.habitacion().personajeParaCurar().aumentarVidaActual(2)
+  }
+}
+
+trait Martir extends  Investigador {
+  def RecuperarCordura(double: Double) = {
+    super.habitacion().investigadores().foreach(investigador => investigador.recuperarCordura(Double))
   }
 }
