@@ -47,6 +47,7 @@ class Habitacion() {
   def agregarInvestigador(investigador: Investigador) = {
     this.personajesEnHabitacion += investigador
     investigador.perderCordura(cantidadDeMonstruos())
+    this.monstruos().
   }
 
   def agregarMonstruo(monstruo: Monstruo) = {
@@ -54,5 +55,21 @@ class Habitacion() {
      this.investigadores().foreach(investigador => investigador.perderCordura(1))
   }
 
+  def corduraPerdidaGlobal(monstruo: Monstruo):Double = {
+    var cordura = 0.0
+    this.investigadores().foreach(investigador => cordura += investigador.corduraPerdida())
+    for (i <- 1 to cantidadDeArcanos()) {
+      this.perderCorduraArcano()
+    }
+    return cordura
+  }
+
+  def perderCorduraArcano(): Unit ={
+    this.investigadores().foreach(investigador => if(randomIntBetween(0,4) = 4){investigador.perderCordura(9999)})
+  }
+
+  def objetivoArcano(): = {
+    return this.investigadores().minBy(_.corduraActual())
+  }
 
 }

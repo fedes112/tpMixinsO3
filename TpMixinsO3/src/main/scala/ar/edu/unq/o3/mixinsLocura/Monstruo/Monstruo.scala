@@ -21,3 +21,10 @@ class Bestia(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
     this.habitacionActual.objetivoBestia().recibirDanio(this.habitacionActual.cantidadDeMonstruos())
   }
 }
+
+class Arcano(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
+
+  override def atacar(): Unit = {
+    this.habitacionActual.objetivoArcano().recibirDanio(this.habitacionActual.corduraPerdidaGlobal())
+  }
+}

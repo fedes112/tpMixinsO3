@@ -68,6 +68,7 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
   def estadoDeLocura(): Boolean = _estadoDeLocura
 
+  def corduraPerdida(): = corduraMax - corduraActual()
 }
 
 class Personaje(vidaMax : Double) {
