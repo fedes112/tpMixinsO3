@@ -1,4 +1,4 @@
-import ar.edu.unq.o3.mixinsLocura.Armas.{Arma, ArmaDeEsfuerzoFisico, ArmaDeFuego, Hechizo}
+import ar.edu.unq.o3.mixinsLocura.Armas._
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Bestia, Monstruo}
 import ar.edu.unq.o3.mixinsLocura.investigador._
@@ -226,5 +226,13 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     assert(monstruo2.vidaActual() == 2 )
   }
 
-
+  "un investigador posee un arma de fuego con 5 de danio base con danio reducido y ataca con ella a una bestia con 5 de vida inflingiendo 4 de danio" should "la bestia pasa a tener 0 de vida" in {
+    var armaDeFuego = new ArmaDeFuego() with DanioReducido
+    var monstruo2 = new Bestia(5)
+    investigador.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeFuego)
+    investigador.atacarConArma()//deberia pasar defensor y atacante
+    assert(monstruo2.vidaActual() == 1 )
+  }
 }

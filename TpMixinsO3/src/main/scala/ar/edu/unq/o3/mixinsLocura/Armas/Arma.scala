@@ -4,17 +4,22 @@ import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 
 
-trait Arma {
+trait  Arma {
 
   def atacar(atacante: Investigador, defensor: Personaje): Unit = {
-    atacante.estadoDeLocuraObjetivo().recibirDanio(this.danioDeArma(atacante, defensor))
+    var objetivo = atacante.estadoDeLocuraObjetivo()
+    var danio = this.danioDeArma(atacante, defensor)
+    objetivo.recibirDanio(danio)
   }
 
-  def danioDeArma(atacante: Investigador, defensor: Personaje) : Double
+  def danioDeArma(atacante: Investigador, defensor: Personaje) : Double = { //rompe si lo hago abstracto
+    0
+  }
 
 }
 
 class ArmaDeFuego extends  Arma {
+
 
   override def danioDeArma(atacante : Investigador, defensor : Personaje): Double = {
     5.0
@@ -36,11 +41,14 @@ class Hechizo(danioBaseHechizo : Double) extends Arma{
     this._danioBase
   }
 
-  def daniototal(susceptibilidadeALosHechizosDefensor: Personaje):Double = {
-    this.danioBase() * susceptibilidadeALosHechizosDefensor.calcularDanioMagico()
-  }
-
   override def danioDeArma(atacante: Investigador, defensor: Personaje): Double = {
-      daniototal(defensor)
+    this.danioBase() * defensor.calcularDanioMagico()
+  }
+}
+
+trait DanioReducido extends Arma {
+
+  override def danioDeArma(atacante: Investigador, defensor: Personaje): Double =  {
+    super.danioDeArma(atacante, defensor) - 1.0
   }
 }
