@@ -1,7 +1,7 @@
 package ar.edu.unq.o3.mixinsLocura.Habitacion
 
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
-import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
+import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Monstruo}
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 import scala.collection.mutable.ArrayBuffer
@@ -14,7 +14,7 @@ class Habitacion() {
 
 
   def personajeAleatorio() : Personaje = {
-   personajesEnHabitacion(randomIntBetween(0, (personajesEnHabitacion.size)))
+   personajesEnHabitacion(randomIntBetween(0, (personajesEnHabitacion.size) - 1 ))
   }
 
   def monstruoAAtacarPorInvestigador() : Monstruo = {
@@ -23,8 +23,6 @@ class Habitacion() {
 
 
   val personajesEnHabitacion : ArrayBuffer[Personaje] = ArrayBuffer[Personaje]()
- // val monstruosEnHabitacion  : ArrayBuffer[Monstruo] = ArrayBuffer[Monstruo]()
-  //val investigadoresEnHabitacion : ArrayBuffer[Investigador] = ArrayBuffer[Investigador]()
 
 
   def cantidadDeMonstruos(): Double = {
@@ -46,29 +44,21 @@ class Habitacion() {
 
   def agregarInvestigador(investigador: Investigador) = {
     this.personajesEnHabitacion += investigador
-    investigador.perderCordura(cantidadDeMonstruos())
-    this.monstruos().
+    this.monstruos().foreach(monstruo => monstruo.causarHorror(investigador))
   }
 
   def agregarMonstruo(monstruo: Monstruo) = {
      this.personajesEnHabitacion += monstruo
-     this.investigadores().foreach(investigador => investigador.perderCordura(1))
+      this.investigadores().foreach(investigador => monstruo.causarHorror(investigador))
   }
 
-  def corduraPerdidaGlobal(monstruo: Monstruo):Double = {
+  def corduraPerdidaGlobal():Double = {
     var cordura = 0.0
     this.investigadores().foreach(investigador => cordura += investigador.corduraPerdida())
-    for (i <- 1 to cantidadDeArcanos()) {
-      this.perderCorduraArcano()
-    }
     return cordura
   }
 
-  def perderCorduraArcano(): Unit ={
-    this.investigadores().foreach(investigador => if(randomIntBetween(0,4) = 4){investigador.perderCordura(9999)})
-  }
-
-  def objetivoArcano(): = {
+  def objetivoArcano(): Investigador = {
     return this.investigadores().minBy(_.corduraActual())
   }
 

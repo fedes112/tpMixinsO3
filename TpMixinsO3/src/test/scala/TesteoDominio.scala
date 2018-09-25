@@ -1,9 +1,10 @@
+import ar.edu.unq.o3.mixinsLocura.Armas.{Arma, ArmaDeEsfuerzoFisico, ArmaDeFuego, Hechizo}
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
-import ar.edu.unq.o3.mixinsLocura.Monstruo.{Bestia, Monstruo}
+import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Bestia, Monstruo}
 import ar.edu.unq.o3.mixinsLocura.investigador._
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
-class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
+class TesteoDominio extends FlatSpec with BeforeAndAfter {
 
 
   var investigador : Investigador = _
@@ -36,9 +37,15 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
   }
 
   "el investigador tiene 10 de cordura actual, pierde los 10 de cordura " should " ahora su cordura actual es de 0 y esta en estado ed locura" in {
+    var investigador2 = new Investigador(1,2)
     assert( !investigador.estadoDeLocura() )
     investigador.perderCordura(10.0)
     assert( investigador.estadoDeLocura() )
+    investigador2.entrarHabitacion(habitacion)
+    investigador.entrarHabitacion(habitacion)
+    investigador.atacar()
+    assert(investigador2.vidaActual() == 0 || investigador.vidaActual() == 0)
+
   }
 
   "el monstruo esta con la vida al maximo" should " tiene 10 de salud actual" in {
@@ -152,11 +159,12 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
     assert(investigador.vidaActual() == 10.0)
   }
 
-  "un invesigador Cobarde ataca a una bestia" should "la corudara pasa a ser 9 " in {
+  "un investigador Cobarde entra en una habitacion, un monstruo entra en la misma habitacion y el investigador ataca a la bestia " should "la cordura del investigador pasa a ser 8 " in {
     var investigadorCobarde= new Investigador(2.0, 10.0) with Cobarde
     investigadorCobarde.entrarHabitacion(habitacion)
+    monstruo.entrarHabitacion(habitacion)
     investigadorCobarde.atacar()
-    assert(investigadorCobarde.corduraActual() == 9.0)
+    assert(investigadorCobarde.corduraActual() == 8.0)
   }
 
   "un invesigador Inestable entra en una habitacion y pierde 1 punto de cordura" should "la vida pasa a ser 9 " in {
@@ -171,9 +179,52 @@ class TesteoInvestigador extends FlatSpec with BeforeAndAfter {
     monstruo.entrarHabitacion(habitacion)
     investigador.entrarHabitacion(habitacion)
     investigadorMartir.entrarHabitacion(habitacion)
-    investigadorMartir.RecuperarCordura(2)
+    investigadorMartir.curarCordura(2)
     assert(investigadorMartir.vidaActual() == 9.0)
     assert(investigador.corduraActual() == 10.0)
   }
+
+"un mounstro arcano entra a la sala y ataca al investigador" should "investigador2 queda en 1 de cordura" in {
+  var investigador2 = new Investigador(7.0,3.0)
+  var arcano = new Arcano(15.0)
+  investigador.entrarHabitacion(habitacion)
+  investigador2.entrarHabitacion(habitacion)
+  investigador.perderCordura(3)
+  arcano.entrarHabitacion(habitacion)
+  arcano.atacar()
+  assert(investigador2.vidaActual()  == 2)
+  }
+
+  "un investigador posee un arma de fuego y ataca con ella a una bestia con 5 de vida inflingiendo 5 de danio" should "la bestia pasa a tener 0 de vida" in {
+    var armaDeFuego = new ArmaDeFuego()
+    var monstruo2 = new Bestia(5)
+    investigador.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeFuego)
+    investigador.atacarConArma()//deberia pasar defensor y atacante
+    assert(monstruo2.vidaActual() == 0 )
+  }
+
+  "un investigador con 10 de vida posee un arma de esfuerzo fisico y ataca con ella a una bestia con 15 de vida inflingiendo 15 de danio" should "la bestia pasa a tener 0 de vida" in {
+    var armaDeEsfuerzoFisico= new ArmaDeEsfuerzoFisico()
+    var monstruo2 = new Bestia(15)
+    investigador.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeEsfuerzoFisico)
+    investigador.atacarConArma()//deberia pasar defensor y atacante
+    assert(monstruo2.vidaActual() == 0 )
+  }
+
+
+  "un investigador con 10 de vida posee un hechizo de 8 de danio base y ataca con el a una bestia con 4 de vida inflingiendo 2 de danio" should "la bestia pasa a tener 2 de vida" in {
+    var hechizo = new Hechizo(8)
+    var monstruo2 = new Bestia(4)
+    investigador.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(hechizo)
+    investigador.atacarConArma()
+    assert(monstruo2.vidaActual() == 2 )
+  }
+
 
 }

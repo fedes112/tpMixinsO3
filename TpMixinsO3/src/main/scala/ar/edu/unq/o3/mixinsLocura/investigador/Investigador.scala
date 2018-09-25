@@ -1,50 +1,78 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
+import ar.edu.unq.o3.mixinsLocura.Armas.Arma
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
 import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
-import scala.annotation.meta.{getter, setter}
 
 
 class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax)  {
 
 
+  val _corduraMaxima: Double = corduraMax
+   var _corduraActual = this.corduraMaxima()
+
+  def atacarConArma() = {
+    this.armaEquipada().atacar(this, this.estadoDeLocuraObjetivo())
+  }
+
+
+  def equiparArma(armaDeFuego: Arma) = {
+    this._armaEquipada = armaDeFuego
+  }
+
+  def armaEquipada() : Arma = {
+    this._armaEquipada
+  }
+
+  var _armaEquipada : Arma = null
+  var _estadoDeLocura: Boolean = false
+
+  def recuperarCorduraAlMaximo() = {
+    this._corduraActual = corduraMaxima()
+  }
+
+  def estadoDeLocuraObjetivo() : Personaje = {
+    if(this.estadoDeLocura()){
+      return personajeParaAtacarInvestigador()
+    }
+    else {
+      return  monstruoParaAtacarInvestigador()
+    }
+  }
+
+  @throws(classOf[NullPointerException])
+  def atacar() : Personaje = {
+    var objetivo = estadoDeLocuraObjetivo()
+    objetivo.recibirDanio(danioParaEnemigos()) //partirlo a quien atacar, cuanto daño y locura
+    return objetivo
+  }
+
+  def perderCorduraMaxima() = {
+    _corduraActual = 0
+  }
+
   def corduraMaxima(): Double = {
     return this._corduraMaxima
   }
 
-
-  var _habitacionActual : Habitacion =  null
-  val _corduraMaxima : Double = corduraMax
-  var _corduraActual : Double = corduraMax
-  var _estadoDeLocura: Boolean = false
-
-
-  @throws(classOf[NullPointerException])
-  def atacar() : Personaje = {
-    if( ! estadoDeLocura()) {
-      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
-      monstruoAAtacar.recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
-      return monstruoAAtacar
-    }
-    else{
-      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
-      personajeAleatorio.recibirDanio(randomIntBetween(1, _saludMaxima.toInt))
-      return personajeAleatorio
-    }
+  def danioParaEnemigos() : Double = {
+    return (randomIntBetween(1, _saludMaxima.toInt).toDouble)
   }
 
-  def habitacion() :Habitacion = {
-    this._habitacionActual
+  def monstruoParaAtacarInvestigador(): Monstruo ={
+    return habitacion().monstruoAAtacarPorInvestigador()
+  }
+
+  def personajeParaAtacarInvestigador(): Personaje = {
+    return habitacion().personajeAleatorio()
   }
 
   def entrarHabitacion(habitacion: Habitacion) = {
     habitacion.agregarInvestigador(this)
     this._habitacionActual = habitacion
   }
-
-
 
 
   def corduraActual(): Double = {
@@ -68,10 +96,22 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
   def estadoDeLocura(): Boolean = _estadoDeLocura
 
-  def corduraPerdida(): = corduraMax - corduraActual()
+  def corduraPerdida(): Double ={ corduraMax - corduraActual()}
+
+  override def calcularDanioMagico(): Double = {
+    1/ this.corduraActual()+1
+  }
 }
 
-class Personaje(vidaMax : Double) {
+abstract class Personaje(vidaMax : Double) {
+
+  def calcularDanioMagico() : Double
+
+
+  val _saludMaxima: Double = vidaMax
+  var _habitacionActual : Habitacion =  null
+  var _saludActual: Double = vidaMax
+
 
   def aumentarVidaActual(i: Int) = {
     if(this.vidaMaxima() < this.vidaActual() + i){
@@ -82,10 +122,14 @@ class Personaje(vidaMax : Double) {
     }
   }
 
-  val _saludMaxima: Double = vidaMax
 
-  var _saludActual: Double = vidaMax
+  def estaMuerto(): Boolean = {
+    vidaActual() == 0
+  }
 
+  def habitacion() :Habitacion = {
+    this._habitacionActual
+  }
 
   def diferenciaDeVida() : Double = {
     return this.vidaMaxima() - this.vidaActual()
@@ -108,91 +152,61 @@ class Personaje(vidaMax : Double) {
 }
 
 
-
 trait Maton extends Investigador{
 
   override def atacar(): Personaje = {
     var personajeAtacado = super.atacar()
-    if(personajeAtacado.vidaActual() == 0) {
-      super.recuperarCordura(super.corduraMaxima())
+    if(personajeAtacado.estaMuerto()) {
+      super.recuperarCorduraAlMaximo()
     }
     return personajeAtacado
   }
 }
 
 trait ArtistaMarcial extends Investigador{
-
-  override def atacar(): Personaje = {
-  var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)* 1.5
-    if( ! estadoDeLocura()) {
-    var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
-    monstruoAAtacar.recibirDanio( danioParaMonstruo)
-    return monstruoAAtacar
-    }
-    else{
-    var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
-    personajeAleatorio.recibirDanio(danioParaMonstruo)
-    return personajeAleatorio
-    }
-  }
+  override def danioParaEnemigos(): Double = {super.danioParaEnemigos()*1.5}
 }
 
-trait Berserker extends Investigador{
+trait Berserker extends Investigador {
 
-  override def atacar(): Personaje = {
-    var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)
-    if( ! estadoDeLocura()) {
-      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
-      monstruoAAtacar.recibirDanio( danioParaMonstruo)
-      return monstruoAAtacar
+
+  override def danioParaEnemigos(): Double = {
+    if (this.estadoDeLocura()) {
+      return super.danioParaEnemigos() * 2.0
     }
-    else{
-      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
-      personajeAleatorio.recibirDanio(danioParaMonstruo * 2)
-      return personajeAleatorio
-    }
+    super.danioParaEnemigos()
   }
+
 }
 
 trait Cobarde extends Investigador{
 
   override def atacar(): Personaje = {
-    var danioParaMonstruo = (randomIntBetween(1, _saludMaxima.toInt).toDouble)* 1.5
-    if( ! estadoDeLocura()) {
-      var monstruoAAtacar = habitacion().monstruoAAtacarPorInvestigador()
-      monstruoAAtacar.recibirDanio( danioParaMonstruo)
-      this.perderCordura(1)
-      return monstruoAAtacar
-    }
-    else{
-      var personajeAleatorio : Personaje = habitacion().personajeAleatorio()
-      personajeAleatorio.recibirDanio(danioParaMonstruo)
-      return personajeAleatorio
-    }
+    this.perderCordura(1)
+    super.atacar()
   }
 }
 
 trait Inestable extends Investigador{
 
   override def perderCordura(cordura: Double) = {
-    this._corduraActual -= cordura
     this.recibirDanio(1)
-    if( this.corduraActual <= 0) {
-      this._estadoDeLocura = true
-      this._corduraActual = 0
-    }
+    super.perderCordura(cordura)
   }
 
 }
 
 trait Curandero extends  Investigador {
   def curar() = {
-    super.habitacion().personajeParaCurar().aumentarVidaActual(2)
+    this.habitacion().personajeParaCurar().aumentarVidaActual(2)
   }
 }
 
 trait Martir extends  Investigador {
-  def RecuperarCordura(double: Double) = {
-    super.habitacion().investigadores().foreach(investigador => investigador.recuperarCordura(Double))
-  }
+  def curarCordura(corduraARecuperar: Double) = {
+    if(this.vidaActual()-corduraARecuperar >0){
+      this.recibirDanio(roundInt(corduraARecuperar*0.5))
+      this.habitacion().investigadores().foreach(investigador => investigador.recuperarCordura(corduraARecuperar))
+    }
+  else{ println("No tienes vida suficiente para curar esa cantidad")} }
 }
