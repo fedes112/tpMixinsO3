@@ -196,7 +196,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   }
 
   "un investigador posee un arma de fuego y ataca con ella a una bestia con 5 de vida inflingiendo 5 de danio" should "la bestia pasa a tener 0 de vida" in {
-    var armaDeFuego = new ArmaDeFuego()
+    var armaDeFuego = new ArmaDeFuego(5)
     var monstruo2 = new Bestia(5)
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
@@ -227,7 +227,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   }
 
   "un investigador posee un arma de fuego con 5 de danio base con danio reducido y ataca con ella a una bestia con 5 de vida inflingiendo 4 de danio" should "la bestia pasa a tener 0 de vida" in {
-    var armaDeFuego = new ArmaDeFuego() with DanioReducido
+    var armaDeFuego = new ArmaDeFuego(5) with DanioReducido
     var monstruo2 = new Bestia(5)
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
@@ -235,4 +235,29 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.atacarConArma()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 1 )
   }
+
+  "un investigador posee un arma de fuego con 5 de danio base con danio propio y ataca con ella a una bestia con 5 de vida inflingiendo 5 de danio y recibiendo el mismo 1 de danio" should "la bestia pasa a tener 0 de vida" in {
+    var armaDeFuego = new ArmaDeFuego(5) with InfligeDanioPropio
+    var monstruo2 = new Bestia(5)
+    investigador.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeFuego)
+    investigador.atacarConArma()//deberia pasar defensor y atacante
+    assert(monstruo2.vidaActual() == 0 )
+    assert(investigador.vidaActual() == 9)
+  }
+
+  "un investigador posee un arma de fuego con 10 de danio base con danio en area y ataca con ella a una bestia con 11 de vida inflingiendole 10 de danio y a los otros investigadores en la habitacion les inflige 1 de danio" should "la bestia pasa a tener 0 de vida" in {
+    var armaDeFuego = new ArmaDeFuego(10) with DanioEnArea
+    var investigador2 = new Investigador(10,10)
+    var monstruo2 = new Bestia(11)
+    investigador.entrarHabitacion(habitacion)
+    investigador2.entrarHabitacion(habitacion)
+    monstruo2.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeFuego)
+    investigador.atacarConArma()//deberia pasar defensor y atacante
+    assert(monstruo2.vidaActual() == 1 )
+    assert(investigador2.vidaActual() == 9)
+  }
+
 }

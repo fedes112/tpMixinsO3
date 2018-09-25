@@ -18,11 +18,12 @@ trait  Arma {
 
 }
 
-class ArmaDeFuego extends  Arma {
+class ArmaDeFuego(danioBase: Double) extends  Arma {
 
+  var _danioBase = danioBase
 
   override def danioDeArma(atacante : Investigador, defensor : Personaje): Double = {
-    5.0
+    this._danioBase
   }
 }
 
@@ -50,5 +51,26 @@ trait DanioReducido extends Arma {
 
   override def danioDeArma(atacante: Investigador, defensor: Personaje): Double =  {
     super.danioDeArma(atacante, defensor) - 1.0
+  }
+}
+
+trait InfligeDanioPropio extends Arma{
+
+  override def atacar(atacante: Investigador, defensor: Personaje): Unit = {
+    super.atacar(atacante, defensor)
+    atacante.recibirDanio(1)
+  }
+}
+
+trait DanioEnArea extends Arma{
+
+
+  def danioEnAreaParaOtrosInvestigadores(atacante : Investigador, defensor :  Personaje) : Unit = {
+    atacante.habitacion().investigadores().foreach(personaje => personaje.recibirDanio(this.danioDeArma(atacante,defensor) * 0.1))
+  }
+
+  override def atacar(atacante: Investigador, defensor: Personaje): Unit = {
+    super.atacar(atacante, defensor)
+    this.danioEnAreaParaOtrosInvestigadores(atacante,defensor)
   }
 }
