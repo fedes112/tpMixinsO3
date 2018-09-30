@@ -22,21 +22,42 @@ abstract class Monstruo(vidaMonstruo: Double) extends Personaje(vidaMonstruo) {
     habitacion.agregarMonstruo(this)
     this.habitacionActual = habitacion
   }
-  def atacar() : Unit
+
+  def danioParaEnemigos(): Double
+
+  def objetivoMonstruo(): Personaje
+
+  def atacar() : Unit = {
+   this.atacarA(this.objetivoMonstruo, this.danioParaEnemigos)
+  }
+
+  def atacarA(defensor: Personaje, danio :Double): Unit = {
+     defensor.recibirDanio(danio)
+  }
+
 }
 
 class Bestia(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
 
-  override def atacar(): Unit = {
-    this.habitacionActual.objetivoBestia().recibirDanio(this.habitacionActual.cantidadDeMonstruos())
+  override def objetivoMonstruo(): Personaje= {
+    this.habitacionActual.objetivoBestia()
   }
-// unificar
+
+  override def danioParaEnemigos(): Double = {
+    this.habitacionActual.cantidadDeMonstruos()
+  }
 }
 
 class Arcano(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
 
-  override def atacar(): Unit = {
-    this.habitacionActual.objetivoArcano().recibirDanio(this.habitacionActual.corduraPerdidaGlobal())
+
+
+  override def objetivoMonstruo(): Personaje= {
+    this.habitacionActual.objetivoArcano()
+  }
+
+  override def danioParaEnemigos(): Double = {
+    this.habitacionActual.corduraPerdidaGlobal()
   }
 
   override def causarHorror(investigador: Investigador): Unit = {

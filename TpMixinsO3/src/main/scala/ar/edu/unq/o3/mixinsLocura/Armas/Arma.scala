@@ -6,30 +6,44 @@ import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 trait  Arma {
 
-  def atacar(atacante: Investigador, defensor: Personaje): Unit = {
-    var objetivo = atacante.estadoDeLocuraObjetivo()
-    var danio = this.danioDeArma(atacante, defensor)
-    objetivo.recibirDanio(danio)
+
+  def personajeQueMeEstaUsando(investigador: Investigador) = {
+    this.personajeQueTieneEquipadaEstaArma = investigador
   }
 
-  def danioDeArma(atacante: Investigador, defensor: Personaje) : Double = { //rompe si lo hago abstracto
+  var personajeQueTieneEquipadaEstaArma : Personaje = null
+
+  def atacarA(personajeAAtacar: Personaje, danio: Double): Unit ={
+    personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
+  }
+
+
+  def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = { //rompe si lo hago abstracto
     0
   }
 
+}
+
+class Punios() extends Arma{
+
+  override def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = {
+    atacante.danioParaEnemigos()
+  }
 }
 
 class ArmaDeFuego(danioBase: Double) extends  Arma {
 
   var _danioBase = danioBase
 
-  override def danioDeArma(atacante : Investigador, defensor : Personaje): Double = {
+  override def danioDeArma(atacante : Personaje, defensor : Personaje): Double = {
     this._danioBase
   }
+
 }
 
 class ArmaDeEsfuerzoFisico extends Arma {
 
-  override def danioDeArma(atacante : Investigador, defensor : Personaje): Double = {
+  override def danioDeArma(atacante : Personaje, defensor : Personaje): Double = {
     atacante.vidaActual()*1.5
   }
 }
@@ -42,35 +56,72 @@ class Hechizo(danioBaseHechizo : Double) extends Arma{
     this._danioBase
   }
 
-  override def danioDeArma(atacante: Investigador, defensor: Personaje): Double = {
+  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
     this.danioBase() * defensor.calcularDanioMagico()
   }
 }
 
 trait DanioReducido extends Arma {
 
-  override def danioDeArma(atacante: Investigador, defensor: Personaje): Double =  {
+  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double =  {
     super.danioDeArma(atacante, defensor) - 1.0
   }
 }
 
 trait InfligeDanioPropio extends Arma{
 
-  override def atacar(atacante: Investigador, defensor: Personaje): Unit = {
-    super.atacar(atacante, defensor)
-    atacante.recibirDanio(1)
+  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit ={
+    personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
+    personajeQueTieneEquipadaEstaArma.recibirDanio(1)
   }
 }
 
 trait DanioEnArea extends Arma{
 
 
-  def danioEnAreaParaOtrosInvestigadores(atacante : Investigador, defensor :  Personaje) : Unit = {
-    atacante.habitacion().investigadores().foreach(personaje => personaje.recibirDanio(this.danioDeArma(atacante,defensor) * 0.1))
+  def danioEnAreaParaOtrosInvestigadores(atacante : Personaje, defensor :  Personaje) : Unit = {
+    atacante.habitacion().investigadores().foreach(personaje => personaje.recibirDanio(this.danioDeArma(this.personajeQueTieneEquipadaEstaArma,defensor) * 0.1))
   }
 
-  override def atacar(atacante: Investigador, defensor: Personaje): Unit = {
-    super.atacar(atacante, defensor)
-    this.danioEnAreaParaOtrosInvestigadores(atacante,defensor)
+  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit =  {
+    personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
+    this.danioEnAreaParaOtrosInvestigadores(personajeQueTieneEquipadaEstaArma , personajeAAtacar)
   }
+}
+
+trait NUsos extends Arma{
+
+  var cantidadDeUsos : Double
+
+  def armaEstaGastada() = cantidadDeUsos == 0
+
+  def disminuirUso(): Unit = {
+    if(this.cantidadDeUsos - 1 > 0){
+      this.cantidadDeUsos -= 1
+    }
+  }
+  override def atacarA(defensor: Personaje, danio: Double): Unit = {
+    if (! this.armaEstaGastada()){
+      super.atacarA(defensor, danio)
+      this.disminuirUso()
+    }
+  }
+}
+
+trait Paulatino extends Arma {
+
+  var desgaste = 100
+
+  def desgastarArma(): Unit = {
+    if(this.desgaste - 10 > 50){
+      this.desgaste -= 10
+    }
+  }
+
+  override def atacarA (defensor: Personaje, danio: Double): Unit = {
+    var danioARealizar = danio * (desgaste / 100)
+    super.atacarA(defensor, danioARealizar)
+    this.desgastarArma()
+  }
+
 }

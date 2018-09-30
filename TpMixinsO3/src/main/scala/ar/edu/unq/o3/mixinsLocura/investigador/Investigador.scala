@@ -1,6 +1,6 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
-import ar.edu.unq.o3.mixinsLocura.Armas.Arma
+import ar.edu.unq.o3.mixinsLocura.Armas.{Arma, Punios}
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
 import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
@@ -9,25 +9,21 @@ import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
 class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax)  {
 
-
   val _corduraMaxima: Double = corduraMax
-   var _corduraActual = this.corduraMaxima()
-
-  def atacarConArma() = {
-    this.armaEquipada().atacar(this, this.estadoDeLocuraObjetivo())
-  }
-
+  var _corduraActual = this.corduraMaxima()
+  var _armaEquipada : Arma = new Punios()
+  var _estadoDeLocura: Boolean = false
 
   def equiparArma(armaDeFuego: Arma) = {
     this._armaEquipada = armaDeFuego
+    armaDeFuego.personajeQueMeEstaUsando(this)
   }
+
+  //Tendria que hacer cambiarArma y que eso le cambie el duenio al arma anterior que tenia y a la actual
 
   def armaEquipada() : Arma = {
     this._armaEquipada
   }
-
-  var _armaEquipada : Arma = null
-  var _estadoDeLocura: Boolean = false
 
   def recuperarCorduraAlMaximo() = {
     this._corduraActual = corduraMaxima()
@@ -42,12 +38,15 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
     }
   }
 
+
   @throws(classOf[NullPointerException])
   def atacar() : Personaje = {
     var objetivo = estadoDeLocuraObjetivo()
-    objetivo.recibirDanio(danioParaEnemigos()) //partirlo a quien atacar, cuanto daño y locura
+    var danio = armaEquipada().danioDeArma(this, objetivo)
+    this.armaEquipada().atacarA(objetivo, danio)
     return objetivo
   }
+
 
   def perderCorduraMaxima() = {
     _corduraActual = 0
@@ -107,6 +106,8 @@ abstract class Personaje(vidaMax : Double) {
 
   def calcularDanioMagico() : Double
 
+
+  def danioParaEnemigos() : Double
 
   val _saludMaxima: Double = vidaMax
   var _habitacionActual : Habitacion =  null

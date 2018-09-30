@@ -201,7 +201,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeFuego)
-    investigador.atacarConArma()//deberia pasar defensor y atacante
+    investigador.atacar()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 0 )
   }
 
@@ -211,7 +211,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeEsfuerzoFisico)
-    investigador.atacarConArma()//deberia pasar defensor y atacante
+    investigador.atacar()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 0 )
   }
 
@@ -222,7 +222,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(hechizo)
-    investigador.atacarConArma()
+    investigador.atacar()
     assert(monstruo2.vidaActual() == 2 )
   }
 
@@ -232,7 +232,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeFuego)
-    investigador.atacarConArma()//deberia pasar defensor y atacante
+    investigador.atacar()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 1 )
   }
 
@@ -242,22 +242,42 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeFuego)
-    investigador.atacarConArma()//deberia pasar defensor y atacante
+    investigador.atacar()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 0 )
     assert(investigador.vidaActual() == 9)
   }
 
-  "un investigador posee un arma de fuego con 10 de danio base con danio en area y ataca con ella a una bestia con 11 de vida inflingiendole 10 de danio y a los otros investigadores en la habitacion les inflige 1 de danio" should "la bestia pasa a tener 0 de vida" in {
-    var armaDeFuego = new ArmaDeFuego(10) with DanioEnArea
+  "un investigador posee un arma de fuego con 10 de danio base con danio en area y con 2 de durabilidad y ataca con ella a una bestia con 11 de vida inflingiendole 10 de danio y a los otros investigadores en la habitacion les inflige 1 de danio" should "la bestia pasa a tener 0 de vida, el arma baja 1 de durabilidad" in {
+    var armaDeFuego = new ArmaDeFuego(10) with DanioEnArea with NUsos{
+      var cantidadDeUsos = 2.0
+    }
     var investigador2 = new Investigador(10,10)
     var monstruo2 = new Bestia(11)
     investigador.entrarHabitacion(habitacion)
     investigador2.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeFuego)
-    investigador.atacarConArma()//deberia pasar defensor y atacante
+    investigador.atacar()//deberia pasar defensor y atacante
     assert(monstruo2.vidaActual() == 1 )
     assert(investigador2.vidaActual() == 9)
+    assert(armaDeFuego.cantidadDeUsos == 1)
   }
+
+
+  "un investigador posee un arma de fuego con 10 de danio base con danio en area y con 0 de durabilidad y ataca con ella a una bestia con 11 de vida" should "No produce danio a nadie en la habitacion " in {
+  var armaDeFuego = new ArmaDeFuego(10) with DanioEnArea with NUsos{
+    var cantidadDeUsos = 0.0
+  }
+  var investigador2 = new Investigador(10,10)
+  var monstruo2 = new Bestia(11)
+  investigador.entrarHabitacion(habitacion)
+  investigador2.entrarHabitacion(habitacion)
+  monstruo2.entrarHabitacion(habitacion)
+  investigador.equiparArma(armaDeFuego)
+  investigador.atacar()//deberia pasar defensor y atacante
+  assert(monstruo2.vidaActual() == 11 )
+  assert(investigador2.vidaActual() == 10)
+
+}
 
 }
