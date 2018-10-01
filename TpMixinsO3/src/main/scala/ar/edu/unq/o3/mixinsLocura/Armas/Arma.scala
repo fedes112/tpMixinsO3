@@ -1,35 +1,27 @@
 package ar.edu.unq.o3.mixinsLocura.Armas
 
+import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 
 
 trait  Arma {
 
-
-  def personajeQueMeEstaUsando(investigador: Investigador) = {
-    this.personajeQueTieneEquipadaEstaArma = investigador
+  def personajeQueMeEstaUsando(personaje: Personaje) = {
+    this.personajeQueTieneEquipadaEstaArma = personaje
   }
 
-  var personajeQueTieneEquipadaEstaArma : Personaje = null
+  var personajeQueTieneEquipadaEstaArma: Personaje = null
 
-  def atacarA(personajeAAtacar: Personaje, danio: Double): Unit ={
-    personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
+  def atacarA(personajeAAtacar: Personaje, danio: Double): Unit = {
+    personajeAAtacar.recibirDanio(danio)
   }
 
-
-  def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = { //rompe si lo hago abstracto
+  def danioDeArma(atacante: Personaje, defensor: Personaje): Double = { //rompe si lo hago abstracto
     0
   }
-
 }
 
-class Punios() extends Arma{
-
-  override def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = {
-    atacante.danioParaEnemigos()
-  }
-}
 
 class ArmaDeFuego(danioBase: Double) extends  Arma {
 
@@ -58,6 +50,13 @@ class Hechizo(danioBaseHechizo : Double) extends Arma{
 
   override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
     this.danioBase() * defensor.calcularDanioMagico()
+  }
+}
+
+class Punios() extends Arma {
+
+  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
+    randomIntBetween(1, atacante.saludMaxima.toInt).toDouble
   }
 }
 
@@ -92,9 +91,7 @@ trait DanioEnArea extends Arma{
 trait NUsos extends Arma{
 
   var cantidadDeUsos : Double
-
   def armaEstaGastada() = cantidadDeUsos == 0
-
   def disminuirUso(): Unit = {
     if(this.cantidadDeUsos - 1 > 0){
       this.cantidadDeUsos -= 1
@@ -117,11 +114,25 @@ trait Paulatino extends Arma {
       this.desgaste -= 10
     }
   }
-
   override def atacarA (defensor: Personaje, danio: Double): Unit = {
     var danioARealizar = danio * (desgaste / 100)
     super.atacarA(defensor, danioARealizar)
     this.desgastarArma()
+  }
+}
+
+trait Fragil extends Arma {
+
+  def probarFragilidad(danioNormal: Double): Double = {
+    if((randomIntBetween(1,20)) == 2){
+      return 0
+    }
+    return danioNormal
+  }
+
+  override def atacarA(defensor: Personaje, danio: Double): Unit = {
+
+    super.atacarA(defensor, this.probarFragilidad(danio))
   }
 
 }

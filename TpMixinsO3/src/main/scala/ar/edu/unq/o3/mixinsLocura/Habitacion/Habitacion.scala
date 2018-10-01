@@ -8,6 +8,11 @@ import scala.collection.mutable.ArrayBuffer
 
 class Habitacion() {
 
+  def agregarPersonaje(personajeQueEntra: Personaje) = {
+    this.personajesEnHabitacion += personajeQueEntra
+  }
+
+
   def personajeParaCurar(): Investigador = {
      this.investigadores().maxBy(_.diferenciaDeVida())
   }
@@ -20,6 +25,14 @@ class Habitacion() {
   def monstruoAAtacarPorInvestigador() : Monstruo = {
     this.monstruos().maxBy(_.vidaActual())
   }
+
+  def investigadorAAtacarPorHumanoide(): Investigador = {
+    this.investigadores().maxBy(_.vidaActual())
+  }
+
+//  def personajeAAtacarSiNoEstoyEnEstadoDeLocura( listaDePersonaje : ArrayBuffer[Personaje]) : Personaje = {
+//    listaDePersonaje.maxBy(_.vidaActual())
+//  }
 
 
   val personajesEnHabitacion : ArrayBuffer[Personaje] = ArrayBuffer[Personaje]()
@@ -42,13 +55,11 @@ class Habitacion() {
     personajesEnHabitacion collect { case x:Monstruo=> x }
   }
 
-  def agregarInvestigador(investigador: Investigador) = {
-    this.personajesEnHabitacion += investigador
+  def efectoAgregarInvestigador(investigador: Investigador) = {
     this.monstruos().foreach(monstruo => monstruo.causarHorror(investigador))
   }
 
-  def agregarMonstruo(monstruo: Monstruo) = {
-     this.personajesEnHabitacion += monstruo
+  def efectoAgregarMonstruo(monstruo: Monstruo) = {
       this.investigadores().foreach(investigador => monstruo.causarHorror(investigador))
   }
 

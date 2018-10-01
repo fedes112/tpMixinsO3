@@ -127,6 +127,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     bestia2.entrarHabitacion(habitacion2)
     monstruo.entrarHabitacion(habitacion)
     monstruo.recibirDanio(18.5)
+    var danioDelMarcial = investigadorMarcial.danioDeArma(investigadorMarcial,monstruo)
     investigadorMarcial.atacar()
     investigador2.atacar()
     assert(bestia2.vidaActual() > 0)

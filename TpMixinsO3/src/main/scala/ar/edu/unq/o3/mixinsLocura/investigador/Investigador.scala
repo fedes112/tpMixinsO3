@@ -1,35 +1,29 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
-import ar.edu.unq.o3.mixinsLocura.Armas.{Arma, Punios}
+
+import ar.edu.unq.o3.mixinsLocura.Armas.Arma
+import ar.edu.unq.o3.mixinsLocura.Cordura.PersonajeConCordura
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
 import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
 
 
-class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax)  {
+class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax) with PersonajeConCordura with PoseeArma {
 
-  val _corduraMaxima: Double = corduraMax
-  var _corduraActual = this.corduraMaxima()
-  var _armaEquipada : Arma = new Punios()
-  var _estadoDeLocura: Boolean = false
+  override var _corduraMaxima = corduraMax
+  override var _corduraActual = corduraMax
+
+  //Tendria que hacer cambiarArma y que eso le cambie el duenio al arma anterior que tenia y a la actual
+
 
   def equiparArma(armaDeFuego: Arma) = {
+
     this._armaEquipada = armaDeFuego
     armaDeFuego.personajeQueMeEstaUsando(this)
   }
 
-  //Tendria que hacer cambiarArma y que eso le cambie el duenio al arma anterior que tenia y a la actual
-
-  def armaEquipada() : Arma = {
-    this._armaEquipada
-  }
-
-  def recuperarCorduraAlMaximo() = {
-    this._corduraActual = corduraMaxima()
-  }
-
-  def estadoDeLocuraObjetivo() : Personaje = {
+  override def objetivoSegunEstadoDeLocuraObjetivo() : Personaje = {
     if(this.estadoDeLocura()){
       return personajeParaAtacarInvestigador()
     }
@@ -41,23 +35,10 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
   @throws(classOf[NullPointerException])
   def atacar() : Personaje = {
-    var objetivo = estadoDeLocuraObjetivo()
+    var objetivo = objetivoSegunEstadoDeLocuraObjetivo()
     var danio = armaEquipada().danioDeArma(this, objetivo)
     this.armaEquipada().atacarA(objetivo, danio)
     return objetivo
-  }
-
-
-  def perderCorduraMaxima() = {
-    _corduraActual = 0
-  }
-
-  def corduraMaxima(): Double = {
-    return this._corduraMaxima
-  }
-
-  def danioParaEnemigos() : Double = {
-    return (randomIntBetween(1, _saludMaxima.toInt).toDouble)
   }
 
   def monstruoParaAtacarInvestigador(): Monstruo ={
@@ -69,67 +50,44 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
   }
 
   def entrarHabitacion(habitacion: Habitacion) = {
-    habitacion.agregarInvestigador(this)
-    this._habitacionActual = habitacion
+    super.entrarHabitacion(habitacion, this)
+    habitacion.efectoAgregarInvestigador(this)
   }
-
-
-  def corduraActual(): Double = {
-    this._corduraActual
-  }
-
-  def recuperarCordura(cordura: Double) = {
-    if(this._corduraMaxima < (this._corduraActual + cordura) ){
-      this._corduraActual = this.corduraMaxima()
-    }else{
-      this._corduraActual += cordura}
-  }
-
-  def perderCordura(cordura: Double) = {
-    this._corduraActual -= cordura
-    if( this.corduraActual <= 0) {
-      this._estadoDeLocura = true
-      this._corduraActual = 0
-    }
-  }
-
-  def estadoDeLocura(): Boolean = _estadoDeLocura
-
-  def corduraPerdida(): Double ={ corduraMax - corduraActual()}
 
   override def calcularDanioMagico(): Double = {
     1/ this.corduraActual()+1
   }
+
 }
 
 abstract class Personaje(vidaMax : Double) {
 
+  val saludMaxima: Double = vidaMax
+  var saludActual: Double = vidaMax
+  var habitacionActual : Habitacion =  null
+
   def calcularDanioMagico() : Double
-
-
-  def danioParaEnemigos() : Double
-
-  val _saludMaxima: Double = vidaMax
-  var _habitacionActual : Habitacion =  null
-  var _saludActual: Double = vidaMax
-
 
   def aumentarVidaActual(i: Int) = {
     if(this.vidaMaxima() < this.vidaActual() + i){
-      this._saludActual =  this.vidaMaxima()
+      this.saludActual =  this.vidaMaxima()
     }
     else{
-      this._saludActual += i
+      this.saludActual += i
     }
   }
 
+  def entrarHabitacion(habitacion: Habitacion, personajeQueEntra: Personaje) = {
+    habitacion.agregarPersonaje(personajeQueEntra)
+    this.habitacionActual = habitacion
+  }
 
   def estaMuerto(): Boolean = {
     vidaActual() == 0
   }
 
   def habitacion() :Habitacion = {
-    this._habitacionActual
+    this.habitacionActual
   }
 
   def diferenciaDeVida() : Double = {
@@ -137,17 +95,17 @@ abstract class Personaje(vidaMax : Double) {
   }
 
   def vidaMaxima() : Double = {
-    this._saludMaxima
+    this.saludMaxima
   }
 
   def vidaActual(): Double = {
-    this._saludActual
+    this.saludActual
   }
 
   def recibirDanio(danio: Double) = {
-    this._saludActual -= danio
+    this.saludActual -= danio
     if (this.vidaActual() <= 0) {
-      this._saludActual = 0
+      this.saludActual = 0
     }
   }
 }
@@ -164,20 +122,27 @@ trait Maton extends Investigador{
   }
 }
 
-trait ArtistaMarcial extends Investigador{
-  override def danioParaEnemigos(): Double = {super.danioParaEnemigos()*1.5}
+trait ArtistaMarcial extends Arma{
+
+  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit = {
+    super.atacarA(personajeAAtacar, (danio * 1.5))
+  }
+
+//  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
+//    super.danioDeArma(atacante, defensor) * 1.5
+//  }
+
 }
 
 trait Berserker extends Investigador {
 
 
-  override def danioParaEnemigos(): Double = {
+  override def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = {
     if (this.estadoDeLocura()) {
-      return super.danioParaEnemigos() * 2.0
+      return super.danioDeArma(atacante, defensor) * 2.0
     }
-    super.danioParaEnemigos()
+    super.danioDeArma(atacante,defensor)
   }
-
 }
 
 trait Cobarde extends Investigador{
