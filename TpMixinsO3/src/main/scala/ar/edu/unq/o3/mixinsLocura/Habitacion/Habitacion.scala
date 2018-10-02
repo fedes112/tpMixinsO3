@@ -12,11 +12,9 @@ class Habitacion() {
     this.personajesEnHabitacion += personajeQueEntra
   }
 
-
   def personajeParaCurar(): Investigador = {
      this.investigadores().maxBy(_.diferenciaDeVida())
   }
-
 
   def personajeAleatorio() : Personaje = {
    personajesEnHabitacion(randomIntBetween(0, (personajesEnHabitacion.size) - 1 ))

@@ -1,6 +1,6 @@
 import ar.edu.unq.o3.mixinsLocura.Armas._
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
-import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Bestia, Monstruo}
+import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Bestia, Humanoide, Monstruo}
 import ar.edu.unq.o3.mixinsLocura.investigador._
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
@@ -278,7 +278,29 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   investigador.atacar()//deberia pasar defensor y atacante
   assert(monstruo2.vidaActual() == 11 )
   assert(investigador2.vidaActual() == 10)
-
 }
+
+  "un investigador posee un arma de fuego con 10 de danio base con danio paulatino y ataca con ella 2 veces a una bestia con 20 de vida" should "La bestia de la vida pasa a ser 1 " in {
+    var armaDeFuego = new ArmaDeFuego(10) with InfligeDanioPropio with Paulatino
+    investigador.entrarHabitacion(habitacion)
+    monstruo.entrarHabitacion(habitacion)
+    investigador.equiparArma(armaDeFuego)
+    investigador.atacar()
+    assert(monstruo.vidaActual() == 10 && investigador.vidaActual() == 9.0)
+    investigador.atacar()
+    assert(monstruo.vidaActual() == 1 && investigador.vidaActual() == 8.0)
+  }
+
+  "un humanoide posee un arma de fuego con 10 de danio base con danio paulatino y ataca con ella a un investigador con 20 de vida" should "La vida del investigador pasa a ser 15 " in {
+    var armaDeFuego = new ArmaDeFuego(10) with InfligeDanioPropio with Paulatino
+    var humanoide = new Humanoide(10,10) with ArtistaMarcial with Cobarde
+    var investigador2 = new Investigador(20,20)
+    investigador.entrarHabitacion(habitacion)
+    investigador2.entrarHabitacion(habitacion)
+    humanoide.entrarHabitacion(habitacion)
+    humanoide.equiparArma(armaDeFuego)
+    humanoide.atacar()
+    assert(investigador2.vidaActual() == 5 && humanoide.vidaActual() == 9.0 && humanoide.corduraActual() == 9.0)
+  }
 
 }

@@ -70,6 +70,11 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
   override var _corduraMaxima: Double = corduraMaxima
   override var _corduraActual: Double = corduraMaxima
 
+  override def recibirDanio(danio: Double): Unit ={
+    super.recibirDanio(danio)
+    this.perderCordura(1)
+  }
+
   override def danioParaEnemigos(personaje:Personaje): Double = {
     armaEquipada().danioDeArma(this, personaje)
   }
@@ -78,7 +83,7 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
     this.habitacion().personajeAleatorio()
   }
 
-  def investigadorParaAtacarInvestigador(): Personaje = {
+  def investigadorParaAtacarHumanoide(): Personaje = {
     this.habitacion().investigadorAAtacarPorHumanoide()
   }
 
@@ -88,7 +93,7 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
       return personajeParaAtacarHumanoide()
     }
     else {
-      return  investigadorParaAtacarInvestigador()
+      return  investigadorParaAtacarHumanoide()
     }
   }
 

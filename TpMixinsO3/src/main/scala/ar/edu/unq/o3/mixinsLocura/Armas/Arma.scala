@@ -58,6 +58,7 @@ class Punios() extends Arma {
   override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
     randomIntBetween(1, atacante.saludMaxima.toInt).toDouble
   }
+
 }
 
 trait DanioReducido extends Arma {

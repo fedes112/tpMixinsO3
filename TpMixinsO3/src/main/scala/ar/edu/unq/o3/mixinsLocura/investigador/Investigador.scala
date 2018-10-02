@@ -33,13 +33,15 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
   }
 
 
+
   @throws(classOf[NullPointerException])
   def atacar() : Personaje = {
     var objetivo = objetivoSegunEstadoDeLocuraObjetivo()
-    var danio = armaEquipada().danioDeArma(this, objetivo)
+    var danio = danioARealizar(objetivo)
     this.armaEquipada().atacarA(objetivo, danio)
     return objetivo
   }
+
 
   def monstruoParaAtacarInvestigador(): Monstruo ={
     return habitacion().monstruoAAtacarPorInvestigador()
@@ -122,26 +124,24 @@ trait Maton extends Investigador{
   }
 }
 
-trait ArtistaMarcial extends Arma{
+trait ArtistaMarcial extends PoseeArma {
 
-  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit = {
-    super.atacarA(personajeAAtacar, (danio * 1.5))
-  }
+  override def danioARealizar(objetivo: Personaje): Double = super.danioARealizar(objetivo) * 1.5
 
 //  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
 //    super.danioDeArma(atacante, defensor) * 1.5
-//  }
+// }
 
 }
 
-trait Berserker extends Investigador {
+trait Berserker extends PoseeArma {
 
-
-  override def danioDeArma(atacante: Personaje, defensor: Personaje) : Double = {
-    if (this.estadoDeLocura()) {
-      return super.danioDeArma(atacante, defensor) * 2.0
+  override def danioARealizar(objetivo: Personaje) : Double = {
+    if (this.personajeQueTieneEquipadaEstaArma.estaMuerto()) {
+      return super.danioARealizar(objetivo) * 2.0
     }
-    super.danioDeArma(atacante,defensor)
+    super.danioARealizar(objetivo)
+
   }
 }
 

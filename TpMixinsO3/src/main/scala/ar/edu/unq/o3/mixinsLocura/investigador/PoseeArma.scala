@@ -9,7 +9,11 @@ trait PoseeArma extends Arma{
 
   def armaEquipada() : Arma = {
   this._armaEquipada
-}
+  }
+
+  def danioARealizar(objetivo: Personaje): Double ={
+    armaEquipada().danioDeArma(this.personajeQueTieneEquipadaEstaArma, objetivo)
+  }
 
 }
 
