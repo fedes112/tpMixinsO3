@@ -71,7 +71,6 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
 
   override var _corduraMaxima: Double = corduraMaxima
   override var _corduraActual: Double = corduraMaxima
-  this.equiparArma(armaBase, this)
 
   override def recibirDanio(danio: Double): Unit ={
     super.recibirDanio(danio)
@@ -102,8 +101,8 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
 
   override def atacar() : Personaje = {
     var objetivo = this.objetivoMonstruo()
-    var danio = this.danioARealizar(objetivo)
-    this.armaEquipada().atacarA(objetivo, danio)
+    var danio = this.danioARealizar(objetivo, this)
+    this.armaEquipada().atacarA(objetivo, danio, this)
     return objetivo
   }
 

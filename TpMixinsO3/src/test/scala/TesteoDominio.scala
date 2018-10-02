@@ -10,11 +10,13 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   var investigador : Investigador = _
   var monstruo : Bestia =  _
   var habitacion : Habitacion = _
+  var sinArmas : Arma = new Punios()
 
   before{
     investigador = new Investigador(10, 10)
     monstruo = new Bestia(20)
     habitacion = new Habitacion()
+    investigador.equiparArma(sinArmas,investigador)
   }
 
 
@@ -109,6 +111,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
 
   "un invesigador maton con 8 de cordura ataca y mata a una bestia" should "la cordura del investigador  se reestablece a su maximo " in {
     var investigadorMaton = new Investigador(10.0, 10.0) with Maton
+    investigadorMaton.equiparArma(sinArmas,investigadorMaton)
     investigadorMaton.perderCordura(2.0)
     investigadorMaton.entrarHabitacion(habitacion)
     monstruo.entrarHabitacion(habitacion)
@@ -123,6 +126,8 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     var habitacion2 = new Habitacion()
     var investigador2 = new Investigador(2.0,10.0)
     investigadorMarcial.entrarHabitacion(habitacion)
+    investigadorMarcial.equiparArma(sinArmas,investigadorMarcial)
+    investigador2.equiparArma(sinArmas,investigador2)
     investigador2.entrarHabitacion(habitacion2)
     bestia2.entrarHabitacion(habitacion2)
     monstruo.entrarHabitacion(habitacion)
@@ -135,16 +140,18 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   }
 
   "un invesigador berserker loco ataca a una bestia y un investigador berserker con cordura ataca a otra bestia " should "la vida de la bestia que fue atacada por el investigador loco muere, la otra sigue con vida" in {
-    var investigadorMarcial= new Investigador(3.0, 1.0) with Berserker
+    var investigadorBerserker = new Investigador(3.0, 1.0) with Berserker
     var bestia2 = new Bestia(2.5)
     var habitacion2 = new Habitacion()
     var investigador2 = new Investigador(3.0,10.0) with Berserker
-    investigadorMarcial.entrarHabitacion(habitacion)
+    investigadorBerserker.entrarHabitacion(habitacion)
+    investigador2.equiparArma(sinArmas,investigador2)
+    investigadorBerserker.equiparArma(sinArmas,investigadorBerserker)
     investigador2.entrarHabitacion(habitacion2)
     bestia2.entrarHabitacion(habitacion2)
     monstruo.entrarHabitacion(habitacion)
     monstruo.recibirDanio(17.5)
-    investigadorMarcial.atacar()
+    investigadorBerserker .atacar()
     investigador2.atacar()
     assert(bestia2.vidaActual() > 0)
     assert(monstruo.vidaActual() == 0)
@@ -162,6 +169,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
 
   "un investigador Cobarde entra en una habitacion, un monstruo entra en la misma habitacion y el investigador ataca a la bestia " should "la cordura del investigador pasa a ser 8 " in {
     var investigadorCobarde= new Investigador(2.0, 10.0) with Cobarde
+    investigadorCobarde.equiparArma(sinArmas, investigadorCobarde)
     investigadorCobarde.entrarHabitacion(habitacion)
     monstruo.entrarHabitacion(habitacion)
     investigadorCobarde.atacar()

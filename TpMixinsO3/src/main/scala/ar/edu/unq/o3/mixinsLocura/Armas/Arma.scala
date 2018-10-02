@@ -5,15 +5,17 @@ import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 
 
+
+
 trait  Arma {
 
-  var personajeQueTieneEquipadaEstaArma: Personaje = null
+//  var personajeQueTieneEquipadaEstaArma: Personaje = null
+//
+//  def personajeQueMeEstaUsando(duenio: Personaje) = {
+//    personajeQueTieneEquipadaEstaArma = duenio
+//  }
 
-  def personajeQueMeEstaUsando(personaje: Personaje) = {
-    this.personajeQueTieneEquipadaEstaArma = personaje
-  }
-
-  def atacarA(personajeAAtacar: Personaje, danio: Double): Unit = {
+  def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
     personajeAAtacar.recibirDanio(danio)
   }
 
@@ -70,9 +72,9 @@ trait DanioReducido extends Arma {
 
 trait InfligeDanioPropio extends Arma{
 
-  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit ={
+  override def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit ={
     personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
-    personajeQueTieneEquipadaEstaArma.recibirDanio(1)
+    personajeQueAtaca.recibirDanio(1)
   }
 }
 
@@ -80,12 +82,12 @@ trait DanioEnArea extends Arma{
 
 
   def danioEnAreaParaOtrosInvestigadores(atacante : Personaje, defensor :  Personaje) : Unit = {
-    atacante.habitacion().investigadores().foreach(personaje => personaje.recibirDanio(this.danioDeArma(this.personajeQueTieneEquipadaEstaArma,defensor) * 0.1))
+    atacante.habitacion().investigadores().foreach(personaje => personaje.recibirDanio(this.danioDeArma(atacante,defensor) * 0.1))
   }
 
-  override def atacarA(personajeAAtacar: Personaje, danio: Double): Unit =  {
+  override def atacarA(personajeAAtacar: Personaje, danio: Double,personajeQueAtaca:Personaje): Unit =  {
     personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
-    this.danioEnAreaParaOtrosInvestigadores(personajeQueTieneEquipadaEstaArma , personajeAAtacar)
+    this.danioEnAreaParaOtrosInvestigadores(personajeQueAtaca , personajeAAtacar)
   }
 }
 
@@ -98,9 +100,9 @@ trait NUsos extends Arma{
       this.cantidadDeUsos -= 1
     }
   }
-  override def atacarA(defensor: Personaje, danio: Double): Unit = {
+  override def atacarA(defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
     if (! this.armaEstaGastada()){
-      super.atacarA(defensor, danio)
+      super.atacarA(defensor, danio, personajeQueAtaca)
       this.disminuirUso()
     }
   }
@@ -115,9 +117,9 @@ trait Paulatino extends Arma {
       this.desgaste -= 10
     }
   }
-  override def atacarA (defensor: Personaje, danio: Double): Unit = {
+  override def atacarA (defensor: Personaje, danio: Double,personajeQueAtaca:Personaje): Unit = {
     var danioARealizar = danio * (desgaste / 100)
-    super.atacarA(defensor, danioARealizar)
+    super.atacarA(defensor, danioARealizar, personajeQueAtaca)
     this.desgastarArma()
   }
 }
@@ -131,9 +133,9 @@ trait Fragil extends Arma {
     return danioNormal
   }
 
-  override def atacarA(defensor: Personaje, danio: Double): Unit = {
+  override def atacarA(defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
 
-    super.atacarA(defensor, this.probarFragilidad(danio))
+    super.atacarA(defensor, this.probarFragilidad(danio), personajeQueAtaca)
   }
 
 }
