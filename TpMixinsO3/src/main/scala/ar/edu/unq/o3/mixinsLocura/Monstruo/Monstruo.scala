@@ -75,9 +75,10 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
 
   override def recibirDanio(danio: Double): Unit ={
     super.recibirDanio(danio)
+    this.perderCordura(1)
   }
 
-  override def danioParaEnemigos(personaje:Personaje): Double = {
+  override def danioParaEnemigos(personaje:Personaje): Double = {//si posee arma extiende de personaje podria subirlo
     armaEquipada().danioDeArma(this, personaje)
   }
 
@@ -110,3 +111,4 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
     this.objetivoSegunEstadoDeLocuraObjetivo()
   }
 }
+

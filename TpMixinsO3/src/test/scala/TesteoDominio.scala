@@ -267,7 +267,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador2.entrarHabitacion(habitacion)
     monstruo2.entrarHabitacion(habitacion)
     investigador.equiparArma(armaDeFuego, investigador)
-    investigador.atacar()//deberia pasar defensor y atacante
+    investigador.atacar()
     assert(monstruo2.vidaActual() == 1 )
     assert(investigador2.vidaActual() == 9)
     assert(armaDeFuego.cantidadDeUsos == 1)
@@ -309,7 +309,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     humanoide.entrarHabitacion(habitacion)
     humanoide.equiparArma(armaDeFuego, humanoide)
     humanoide.atacar()
-    assert(investigador2.vidaActual() == 5 && humanoide.vidaActual() == 9.0 && humanoide.corduraActual() == 9.0)
+    assert(investigador2.vidaActual() == 5 && humanoide.vidaActual() == 9.0 && humanoide.corduraActual() == 8.0)
   }
 
   "Jack es un matón berserker cobarde . Le resta un 1 punto de cordura (de un total de 3) y 6 puntos de vida restantes (de un total de 8). Tiene equipada un hacha maldita con daño reducido y con desgaste paulatino que nunca ha usado antes (la acaba de encontrar tirada por ahí)."should  "arcano recibe 8 de danio" in {

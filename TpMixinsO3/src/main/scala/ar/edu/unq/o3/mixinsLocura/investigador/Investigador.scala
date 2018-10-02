@@ -1,7 +1,6 @@
 package ar.edu.unq.o3.mixinsLocura.investigador
 
 
-import ar.edu.unq.o3.mixinsLocura.Armas.Arma
 import ar.edu.unq.o3.mixinsLocura.Cordura.PersonajeConCordura
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
@@ -10,13 +9,14 @@ import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
 
 class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax) with PersonajeConCordura with PoseeArma {
+  override var _corduraMaxima = corduraMax
+  override var _corduraActual = corduraMax
+
   def explorar() = {
     habitacion().conseguirUnObjetoRandom().descubrir(this)
   }
 
 
-  override var _corduraMaxima = corduraMax
-  override var _corduraActual = corduraMax
 
   override def objetivoSegunEstadoDeLocuraObjetivo() : Personaje = {
     if(this.estadoDeLocura()){
@@ -55,13 +55,12 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
 }
 
-abstract class Personaje(vidaMax : Double) {
+abstract class Personaje(vidaMax : Double) extends EstarEnHabitacion {
 
   val saludMaxima: Double = vidaMax
   var saludActual: Double = vidaMax
-  var habitacionActual : Habitacion =  null
 
-  def calcularDanioMagico() : Double
+  def calcularDanioMagico() : Double //poner el de la vida
 
   def atacar(): Personaje = new Investigador(10,10)
 
@@ -74,17 +73,8 @@ abstract class Personaje(vidaMax : Double) {
     }
   }
 
-  def entrarHabitacion(habitacion: Habitacion, personajeQueEntra: Personaje) = {
-    habitacion.agregarPersonaje(personajeQueEntra)
-    this.habitacionActual = habitacion
-  }
-
   def estaMuerto(): Boolean = {
     vidaActual() == 0
-  }
-
-  def habitacion() :Habitacion = {
-    this.habitacionActual
   }
 
   def diferenciaDeVida() : Double = {
@@ -123,9 +113,6 @@ trait ArtistaMarcial extends PoseeArma {
 
   override def danioARealizar(objetivo: Personaje, atacante: Personaje): Double = super.danioARealizar(objetivo, atacante) * 1.5
 
-//  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
-//    super.danioDeArma(atacante, defensor) * 1.5
-// }
 
 }
 
@@ -170,4 +157,17 @@ trait Martir extends  Investigador {
       this.habitacion().investigadores().foreach(investigador => investigador.recuperarCordura(corduraARecuperar))
     }
   else{ println("No tienes vida suficiente para curar esa cantidad")} }
+}
+
+trait EstarEnHabitacion{
+  var habitacionActual : Habitacion =  null
+
+  def entrarHabitacion(habitacion: Habitacion, personajeQueEntra: Personaje) = {
+    habitacion.agregarPersonaje(personajeQueEntra)
+    this.habitacionActual = habitacion
+  }
+
+  def habitacion() :Habitacion = {
+    this.habitacionActual
+  }
 }

@@ -15,7 +15,7 @@ trait  Arma extends  Objeto{
     personajeAAtacar.recibirDanio(danio)
   }
 
-  def danioDeArma(atacante: Personaje, defensor: Personaje): Double = { //rompe si lo hago abstracto
+  def danioDeArma(atacante: Personaje, defensor: Personaje): Double = { //rompe si lo hago abstracto dbeeria ser abstract override
     0
   }
 }
@@ -83,7 +83,7 @@ trait DanioEnArea extends Arma{
 
   override def atacarA(personajeAAtacar: Personaje, danio: Double,personajeQueAtaca:Personaje): Unit =  {
     personajeAAtacar.recibirDanio(danio)
-    this.danioEnAreaParaOtrosInvestigadores(personajeQueAtaca , personajeAAtacar)
+    this.danioEnAreaParaOtrosInvestigadores(personajeQueAtaca , personajeAAtacar)//sumar ataque a los para
   }
 }
 

@@ -1,6 +1,5 @@
 package ar.edu.unq.o3.mixinsLocura.Habitacion
 
-import ar.edu.unq.o3.mixinsLocura.MansionesUtils
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Monstruo}
 import ar.edu.unq.o3.mixinsLocura.Objetos.{Nada, Objeto}
