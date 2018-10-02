@@ -1,6 +1,7 @@
 import ar.edu.unq.o3.mixinsLocura.Armas._
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Bestia, Humanoide, Monstruo}
+import ar.edu.unq.o3.mixinsLocura.Objetos._
 import ar.edu.unq.o3.mixinsLocura.investigador._
 import org.scalatest.{BeforeAndAfter, FlatSpec}
 
@@ -314,7 +315,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   "Jack es un matón berserker cobarde . Le resta un 1 punto de cordura (de un total de 3) y 6 puntos de vida restantes (de un total de 8). Tiene equipada un hacha maldita con daño reducido y con desgaste paulatino que nunca ha usado antes (la acaba de encontrar tirada por ahí)."should  "arcano recibe 8 de danio" in {
     var jack = new Investigador(8,3) with Maton with Berserker with Cobarde
     jack.recibirDanio(2)
-    var hacha = new ArmaDeEsfuerzoFisico() with DanioReducido
+    var hacha = new ArmaDeEsfuerzoFisico() with DanioReducido with Paulatino
     var bestia = new Bestia(20)
     jack.entrarHabitacion(habitacion)
     investigador.entrarHabitacion(habitacion)
@@ -322,5 +323,57 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     jack.equiparArma(hacha, jack)
     jack.atacar()
     assert(bestia.vidaActual() == 12)
+  }
+
+  "un investigador encuentra un objeto pista en la habitacion que es super terrorifica" should "la cordura del investigador baja en 1" in {
+    var pista = new Pista() with Terrorifico{
+      override var valorADisminuirCordura: Double = 2
+    }
+    var pista2 = new Pista() with Terrorifico{
+      override var valorADisminuirCordura: Double = 2
+    }
+    habitacion.agregarObjeto(pista2)
+    habitacion.agregarObjeto(pista)
+    investigador.entrarHabitacion(habitacion)
+    investigador.explorar()
+    assert(investigador.corduraActual() == 8.0)
+  }
+
+  "un investigador encuentra un arma pista en la habitacion que convoca un monstruo" should "la cordura del investigador baja en 1" in {
+
+    var pista = new ArmaDeFuego(10) with ConvocaMonstruo{
+      override var monstruoAConvocar: Monstruo = monstruo
+    }
+    habitacion.agregarObjeto(pista)
+    habitacion.agregarObjeto(pista)
+    investigador.entrarHabitacion(habitacion)
+    investigador.explorar()
+    assert(investigador.corduraActual() == 9.0)
+  }
+
+  "un investigador encuentra un arma pista en la habitacion que convoca un monstruo y lo lastima" should "la cordura y la salud del investigador baja en 1" in {
+
+    var pista = new ArmaDeFuego(10) with ConvocaMonstruo with Perjudicial{
+      override var monstruoAConvocar: Monstruo = monstruo
+      override var vidaAPerder: Double = 1
+    }
+    habitacion.agregarObjeto(pista)
+    habitacion.agregarObjeto(pista)
+    investigador.entrarHabitacion(habitacion)
+    investigador.explorar()
+    assert(investigador.corduraActual() == 9.0 && investigador.vidaActual() == 9.0)
+  }
+
+  "un investigador encuentra un arma pista en la habitacion que convoca un monstruo y lo cura" should "la cordura del investigador baja en 1 y como esta full vida no pasa nada " in {
+
+    var pista = new ArmaDeFuego(10) with ConvocaMonstruo with Saludable{
+      override var monstruoAConvocar: Monstruo = monstruo
+      override var vidaARecuperar: Double = 1
+    }
+    habitacion.agregarObjeto(pista)
+    habitacion.agregarObjeto(pista)
+    investigador.entrarHabitacion(habitacion)
+    investigador.explorar()
+    assert(investigador.corduraActual() == 9.0 && investigador.vidaActual() == 10.0)
   }
 }

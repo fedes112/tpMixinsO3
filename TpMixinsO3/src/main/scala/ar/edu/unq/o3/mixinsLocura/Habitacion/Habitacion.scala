@@ -1,12 +1,24 @@
 package ar.edu.unq.o3.mixinsLocura.Habitacion
 
-import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
+import ar.edu.unq.o3.mixinsLocura.MansionesUtils
+import ar.edu.unq.o3.mixinsLocura.MansionesUtils.{randomElement, randomIntBetween, roundInt}
 import ar.edu.unq.o3.mixinsLocura.Monstruo.{Arcano, Monstruo}
+import ar.edu.unq.o3.mixinsLocura.Objetos.{Nada, Objeto}
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 import scala.collection.mutable.ArrayBuffer
 
 class Habitacion() {
+
+
+  def agregarObjeto(objetoNuevo: Objeto) = {
+    this.objetosEnHabitacion += objetoNuevo
+  }
+
+  def conseguirUnObjetoRandom() = {
+    randomElement(objetosEnHabitacion.toList)
+  }
+
 
   def agregarPersonaje(personajeQueEntra: Personaje) = {
     this.personajesEnHabitacion += personajeQueEntra
@@ -34,7 +46,7 @@ class Habitacion() {
 
 
   val personajesEnHabitacion : ArrayBuffer[Personaje] = ArrayBuffer[Personaje]()
-
+  val objetosEnHabitacion: ArrayBuffer[Objeto] = ArrayBuffer[Objeto]()
 
   def cantidadDeMonstruos(): Double = {
     return this.monstruos().size

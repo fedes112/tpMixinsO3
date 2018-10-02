@@ -4,7 +4,7 @@ import ar.edu.unq.o3.mixinsLocura.Armas.Arma
 import ar.edu.unq.o3.mixinsLocura.Cordura.PersonajeConCordura
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
-import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
+import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
 
 abstract class Monstruo(vidaMonstruo: Double) extends Personaje(vidaMonstruo) {
 
@@ -68,7 +68,7 @@ class Arcano(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
   }
 }
 
-class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monstruo(vidaMaximaHumanoide) with PersonajeConCordura with Arma{
+class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monstruo(vidaMaximaHumanoide) with PersonajeConCordura with PoseeArma{
 
   override var _corduraMaxima: Double = corduraMaxima
   override var _corduraActual: Double = corduraMaxima

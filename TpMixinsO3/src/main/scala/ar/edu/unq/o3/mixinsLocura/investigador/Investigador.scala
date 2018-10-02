@@ -9,7 +9,11 @@ import ar.edu.unq.o3.mixinsLocura.Monstruo.Monstruo
 
 
 
-class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax) with PersonajeConCordura with Arma {
+class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMax) with PersonajeConCordura with PoseeArma {
+  def explorar() = {
+    habitacion().conseguirUnObjetoRandom().descubrir(this)
+  }
+
 
   override var _corduraMaxima = corduraMax
   override var _corduraActual = corduraMax
@@ -61,7 +65,7 @@ abstract class Personaje(vidaMax : Double) {
 
   def atacar(): Personaje = new Investigador(10,10)
 
-  def aumentarVidaActual(i: Int) = {
+  def aumentarVidaActual(i: Double) = {
     if(this.vidaMaxima() < this.vidaActual() + i){
       this.saludActual =  this.vidaMaxima()
     }
@@ -115,7 +119,7 @@ trait Maton extends Personaje with PersonajeConCordura  {
   }
 }
 
-trait ArtistaMarcial extends Arma {
+trait ArtistaMarcial extends PoseeArma {
 
   override def danioARealizar(objetivo: Personaje, atacante: Personaje): Double = super.danioARealizar(objetivo, atacante) * 1.5
 
@@ -125,7 +129,7 @@ trait ArtistaMarcial extends Arma {
 
 }
 
-trait Berserker extends PersonajeConCordura with Arma {
+trait Berserker extends PersonajeConCordura with PoseeArma {
 
   override def danioARealizar(objetivo: Personaje, atacante: Personaje) : Double = {
     if (this.estadoDeLocura()) {

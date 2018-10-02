@@ -1,23 +1,15 @@
 package ar.edu.unq.o3.mixinsLocura.Armas
 
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
+import ar.edu.unq.o3.mixinsLocura.Objetos.Objeto
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
 
-trait  Arma {
+trait  Arma extends  Objeto{
 
-  var _armaEquipada : Arma = null
-
-  def armaEquipada() : Arma = {
-    this._armaEquipada
+  override def descubrir(investigador: Investigador): Unit = {
+    investigador.equiparArma(this, investigador)
   }
 
-  def equiparArma(armaDeFuego: Arma, personajeAEquiparArma: Personaje) = {
-    this._armaEquipada = armaDeFuego
-  }
-
-  def danioARealizar(objetivo: Personaje, atacante: Personaje): Double ={
-    armaEquipada().danioDeArma(atacante, objetivo)
-  }
 
   def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
     personajeAAtacar.recibirDanio(danio)

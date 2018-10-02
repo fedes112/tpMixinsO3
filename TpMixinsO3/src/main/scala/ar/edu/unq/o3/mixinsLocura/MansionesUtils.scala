@@ -2,6 +2,9 @@ package ar.edu.unq.o3.mixinsLocura
 
 import scala.util.Random
 
+
+
+
   object MansionesUtils {
     /** retorna un entero aleatorio entre el rango dado [low-high] */
     //def randomIntBetween(low: Int, high: Int) = new Random().nextInt(high - low) + low
