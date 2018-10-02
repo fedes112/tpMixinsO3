@@ -313,7 +313,6 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
 
   "Jack es un matón berserker cobarde . Le resta un 1 punto de cordura (de un total de 3) y 6 puntos de vida restantes (de un total de 8). Tiene equipada un hacha maldita con daño reducido y con desgaste paulatino que nunca ha usado antes (la acaba de encontrar tirada por ahí)."should  "arcano recibe 8 de danio" in {
     var jack = new Investigador(8,3) with Maton with Berserker with Cobarde
-    jack.perderCordura(1)
     jack.recibirDanio(2)
     var hacha = new ArmaDeEsfuerzoFisico() with DanioReducido
     var bestia = new Bestia(20)
@@ -322,6 +321,6 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     bestia.entrarHabitacion(habitacion)
     jack.equiparArma(hacha, jack)
     jack.atacar()
-    assert(bestia.vidaActual() == 8)
+    assert(bestia.vidaActual() == 12)
   }
 }
