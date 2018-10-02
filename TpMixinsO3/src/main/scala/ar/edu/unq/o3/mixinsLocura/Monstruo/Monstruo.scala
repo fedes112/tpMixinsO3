@@ -21,8 +21,10 @@ abstract class Monstruo(vidaMonstruo: Double) extends Personaje(vidaMonstruo) {
 
   def objetivoMonstruo(): Personaje
 
-  def atacar() : Unit = {
-   this.monstruoAtacarA(this.objetivoMonstruo, this.danioParaEnemigos(this.objetivoMonstruo()))
+  override def atacar() : Personaje = {
+    var  objetivo = this.objetivoMonstruo
+    this.monstruoAtacarA(objetivo , this.danioParaEnemigos(this.objetivoMonstruo()))
+    return objetivo
   }
 
   def entrarHabitacion(habitacion: Habitacion) = {
@@ -69,6 +71,7 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
 
   override var _corduraMaxima: Double = corduraMaxima
   override var _corduraActual: Double = corduraMaxima
+  this.equiparArma(armaBase, this)
 
   override def recibirDanio(danio: Double): Unit ={
     super.recibirDanio(danio)
@@ -95,6 +98,13 @@ class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monst
     else {
       return  investigadorParaAtacarHumanoide()
     }
+  }
+
+  override def atacar() : Personaje = {
+    var objetivo = this.objetivoMonstruo()
+    var danio = this.danioARealizar(objetivo)
+    this.armaEquipada().atacarA(objetivo, danio)
+    return objetivo
   }
 
   override def objetivoMonstruo(): Personaje = {

@@ -7,11 +7,11 @@ import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 trait  Arma {
 
+  var personajeQueTieneEquipadaEstaArma: Personaje = null
+
   def personajeQueMeEstaUsando(personaje: Personaje) = {
     this.personajeQueTieneEquipadaEstaArma = personaje
   }
-
-  var personajeQueTieneEquipadaEstaArma: Personaje = null
 
   def atacarA(personajeAAtacar: Personaje, danio: Double): Unit = {
     personajeAAtacar.recibirDanio(danio)

@@ -13,15 +13,11 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
   override var _corduraMaxima = corduraMax
   override var _corduraActual = corduraMax
+  this.equiparArma(armaBase, this)
 
   //Tendria que hacer cambiarArma y que eso le cambie el duenio al arma anterior que tenia y a la actual
 
 
-  def equiparArma(armaDeFuego: Arma) = {
-
-    this._armaEquipada = armaDeFuego
-    armaDeFuego.personajeQueMeEstaUsando(this)
-  }
 
   override def objetivoSegunEstadoDeLocuraObjetivo() : Personaje = {
     if(this.estadoDeLocura()){
@@ -35,7 +31,7 @@ class Investigador(vidaMax: Double, corduraMax: Double) extends Personaje(vidaMa
 
 
   @throws(classOf[NullPointerException])
-  def atacar() : Personaje = {
+  override def atacar() : Personaje = {
     var objetivo = objetivoSegunEstadoDeLocuraObjetivo()
     var danio = danioARealizar(objetivo)
     this.armaEquipada().atacarA(objetivo, danio)
@@ -69,6 +65,8 @@ abstract class Personaje(vidaMax : Double) {
   var habitacionActual : Habitacion =  null
 
   def calcularDanioMagico() : Double
+
+  def atacar(): Personaje = new Investigador(10,10)
 
   def aumentarVidaActual(i: Int) = {
     if(this.vidaMaxima() < this.vidaActual() + i){
@@ -113,7 +111,7 @@ abstract class Personaje(vidaMax : Double) {
 }
 
 
-trait Maton extends Investigador{
+trait Maton extends Investigador {
 
   override def atacar(): Personaje = {
     var personajeAtacado = super.atacar()
@@ -145,7 +143,7 @@ trait Berserker extends PoseeArma {
   }
 }
 
-trait Cobarde extends Investigador{
+trait Cobarde extends PersonajeConCordura{
 
   override def atacar(): Personaje = {
     this.perderCordura(1)
@@ -153,7 +151,7 @@ trait Cobarde extends Investigador{
   }
 }
 
-trait Inestable extends Investigador{
+trait Inestable extends PersonajeConCordura{
 
   override def perderCordura(cordura: Double) = {
     this.recibirDanio(1)
@@ -162,7 +160,7 @@ trait Inestable extends Investigador{
 
 }
 
-trait Curandero extends  Investigador {
+trait Curandero extends  PersonajeConCordura {
   def curar() = {
     this.habitacion().personajeParaCurar().aumentarVidaActual(2)
   }
