@@ -43,8 +43,8 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     assert( !investigador.estadoDeLocura() )
     investigador.perderCordura(10.0)
     assert( investigador.estadoDeLocura() )
-    investigador2.entrarHabitacion(habitacion)
     investigador.entrarHabitacion(habitacion)
+    investigador2.entrarHabitacion(habitacion)
     investigador.atacar()
     assert(investigador2.vidaActual() == 0 || investigador.vidaActual() == 0)
 
@@ -149,7 +149,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     investigador2.entrarHabitacion(habitacion2)
     bestia2.entrarHabitacion(habitacion2)
     monstruo.entrarHabitacion(habitacion)
-    monstruo.recibirDanio(17.5)
+    monstruo.recibirDanio(18.0)
     investigadorBerserker .atacar()
     investigador2.atacar()
     assert(bestia2.vidaActual() > 0)

@@ -4,8 +4,8 @@ import scala.util.Random
 
   object MansionesUtils {
     /** retorna un entero aleatorio entre el rango dado [low-high] */
-    def randomIntBetween(low: Int, high: Int) = new Random().nextInt(high - low) + low
-
+    //def randomIntBetween(low: Int, high: Int) = new Random().nextInt(high - low) + low
+    def randomIntBetween(low: Int, high: Int) = 1//new Random().nextInt(high - low) + low
     /** redondea un numero decimal a entero */
     def roundInt(d: Double) = Math.round(d).asInstanceOf[Int]
 
