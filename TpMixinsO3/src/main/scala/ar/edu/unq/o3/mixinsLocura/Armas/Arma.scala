@@ -1,13 +1,13 @@
 package ar.edu.unq.o3.mixinsLocura.Armas
 
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
-import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
+import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
 
 
 
 
 
-trait  Arma {
+trait  Arma extends  PoseeArma{
 
 //  var personajeQueTieneEquipadaEstaArma: Personaje = null
 //
@@ -117,11 +117,23 @@ trait Paulatino extends Arma {
       this.desgaste -= 10
     }
   }
-  override def atacarA (defensor: Personaje, danio: Double,personajeQueAtaca:Personaje): Unit = {
-    var danioARealizar = danio * (desgaste / 100)
-    super.atacarA(defensor, danioARealizar, personajeQueAtaca)
+
+  override def danioARealizar(objetivo: Personaje, atacante: Personaje): Double = {
+    super.danioARealizar(objetivo, atacante) * (desgaste / 100)
+  }
+//  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
+//    super.danioDeArma(atacante, defensor)
+//  }
+
+  override def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca: Personaje): Unit = {
+    super.atacarA(personajeAAtacar, danio, personajeQueAtaca)
     this.desgastarArma()
   }
+//  override def atacarA (defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
+//    var danioARealizar = danio
+//    super.atacarA(defensor, danioARealizar, personajeQueAtaca)
+//
+//  }
 }
 
 trait Fragil extends Arma {

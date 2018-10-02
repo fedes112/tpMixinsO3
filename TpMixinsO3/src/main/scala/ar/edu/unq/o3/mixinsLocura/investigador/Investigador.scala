@@ -125,11 +125,13 @@ trait ArtistaMarcial extends PoseeArma {
 
 }
 
-trait Berserker extends PoseeArma {
+trait Berserker extends PoseeArma with PersonajeConCordura {
 
   override def danioARealizar(objetivo: Personaje, atacante: Personaje) : Double = {
-
-    super.danioARealizar(objetivo, atacante)
+    if (this.estadoDeLocura()) {
+      return super.danioARealizar(objetivo, atacante) * 2.0
+    }
+    super.danioARealizar(objetivo,atacante)
 
   }
 }
