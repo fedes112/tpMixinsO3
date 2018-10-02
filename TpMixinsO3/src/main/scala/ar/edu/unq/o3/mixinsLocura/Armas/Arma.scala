@@ -9,11 +9,19 @@ import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeAr
 
 trait  Arma extends  PoseeArma{
 
-//  var personajeQueTieneEquipadaEstaArma: Personaje = null
-//
-//  def personajeQueMeEstaUsando(duenio: Personaje) = {
-//    personajeQueTieneEquipadaEstaArma = duenio
-//  }
+  var _armaEquipada : Arma = null
+
+  def armaEquipada() : Arma = {
+    this._armaEquipada
+  }
+
+  def equiparArma(armaDeFuego: Arma, personajeAEquiparArma: Personaje) = {
+    this._armaEquipada = armaDeFuego
+  }
+
+  def danioARealizar(objetivo: Personaje, atacante: Personaje): Double ={
+    armaEquipada().danioDeArma(atacante, objetivo)
+  }
 
   def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
     personajeAAtacar.recibirDanio(danio)
@@ -86,7 +94,7 @@ trait DanioEnArea extends Arma{
   }
 
   override def atacarA(personajeAAtacar: Personaje, danio: Double,personajeQueAtaca:Personaje): Unit =  {
-    personajeAAtacar.recibirDanio(danio) //partirlo a quien atacar, cuanto daño y locura
+    personajeAAtacar.recibirDanio(danio)
     this.danioEnAreaParaOtrosInvestigadores(personajeQueAtaca , personajeAAtacar)
   }
 }
@@ -118,22 +126,14 @@ trait Paulatino extends Arma {
     }
   }
 
-  override def danioARealizar(objetivo: Personaje, atacante: Personaje): Double = {
-    super.danioARealizar(objetivo, atacante) * (desgaste / 100)
+  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
+    (super.danioDeArma(atacante, defensor)) * (desgaste / 100)
   }
-//  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
-//    super.danioDeArma(atacante, defensor)
-//  }
 
   override def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca: Personaje): Unit = {
     super.atacarA(personajeAAtacar, danio, personajeQueAtaca)
     this.desgastarArma()
   }
-//  override def atacarA (defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
-//    var danioARealizar = danio
-//    super.atacarA(defensor, danioARealizar, personajeQueAtaca)
-//
-//  }
 }
 
 trait Fragil extends Arma {
@@ -145,9 +145,12 @@ trait Fragil extends Arma {
     return danioNormal
   }
 
-  override def atacarA(defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
+  override def danioDeArma(atacante: Personaje, defensor: Personaje): Double =
+    probarFragilidad(super.danioDeArma(atacante, defensor))
 
-    super.atacarA(defensor, this.probarFragilidad(danio), personajeQueAtaca)
-  }
+//  override def atacarA(defensor: Personaje, danio: Double, personajeQueAtaca:Personaje): Unit = {
+//
+//    super.atacarA(defensor, this.probarFragilidad(danio), personajeQueAtaca)
+//  }
 
 }

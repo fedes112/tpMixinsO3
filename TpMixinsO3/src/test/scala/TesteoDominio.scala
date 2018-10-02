@@ -300,7 +300,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
   }
 
   "un humanoide posee un arma de fuego con 10 de danio base con danio paulatino y ataca con ella a un investigador con 20 de vida" should "La vida del investigador pasa a ser 15 " in {
-    var humanoide = new Humanoide(10,10) with ArtistaMarcial
+    var humanoide = new Humanoide(10,10)  with Cobarde with ArtistaMarcial
     var armaDeFuego = new ArmaDeFuego(10) with InfligeDanioPropio with Paulatino
     var investigador2 = new Investigador(20,20)
     investigador.entrarHabitacion(habitacion)
@@ -308,7 +308,7 @@ class TesteoDominio extends FlatSpec with BeforeAndAfter {
     humanoide.entrarHabitacion(habitacion)
     humanoide.equiparArma(armaDeFuego, humanoide)
     humanoide.atacar()
-    assert(investigador2.vidaActual() == 5 && humanoide.vidaActual() == 9.0 )//&& humanoide.corduraActual() == 9.0)
+    assert(investigador2.vidaActual() == 5 && humanoide.vidaActual() == 9.0 && humanoide.corduraActual() == 9.0)
   }
 
 }

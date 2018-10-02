@@ -1,5 +1,6 @@
 package ar.edu.unq.o3.mixinsLocura.Monstruo
 
+import ar.edu.unq.o3.mixinsLocura.Armas.Arma
 import ar.edu.unq.o3.mixinsLocura.Cordura.PersonajeConCordura
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
@@ -67,14 +68,13 @@ class Arcano(vidaMaximaBestia: Double) extends Monstruo(vidaMaximaBestia){
   }
 }
 
-class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monstruo(vidaMaximaHumanoide) with PersonajeConCordura with PoseeArma{
+class Humanoide(vidaMaximaHumanoide: Double, corduraMaxima:Double) extends Monstruo(vidaMaximaHumanoide) with PersonajeConCordura with Arma{
 
   override var _corduraMaxima: Double = corduraMaxima
   override var _corduraActual: Double = corduraMaxima
 
   override def recibirDanio(danio: Double): Unit ={
     super.recibirDanio(danio)
-    this.perderCordura(1)
   }
 
   override def danioParaEnemigos(personaje:Personaje): Double = {
