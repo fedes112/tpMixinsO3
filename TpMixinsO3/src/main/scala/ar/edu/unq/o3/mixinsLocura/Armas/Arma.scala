@@ -3,10 +3,6 @@ package ar.edu.unq.o3.mixinsLocura.Armas
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
 
-
-
-
-
 trait  Arma extends  PoseeArma{
 
   var _armaEquipada : Arma = null

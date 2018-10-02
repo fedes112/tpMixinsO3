@@ -2,7 +2,7 @@ package ar.edu.unq.o3.mixinsLocura.Cordura
 
 import ar.edu.unq.o3.mixinsLocura.investigador.Personaje
 
-trait PersonajeConCordura extends Personaje{
+trait PersonajeConCordura {
 
   var _corduraMaxima: Double
   var _corduraActual :Double

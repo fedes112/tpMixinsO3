@@ -104,7 +104,7 @@ abstract class Personaje(vidaMax : Double) {
 }
 
 
-trait Maton extends PersonajeConCordura with Arma {
+trait Maton extends Personaje with PersonajeConCordura  {
 
   override def atacar(): Personaje = {
     var personajeAtacado = super.atacar()
@@ -136,7 +136,7 @@ trait Berserker extends PersonajeConCordura with Arma {
   }
 }
 
-trait Cobarde extends PersonajeConCordura{
+trait Cobarde extends Personaje with PersonajeConCordura {
 
   override def atacar(): Personaje = {
     this.perderCordura(1)
@@ -144,7 +144,7 @@ trait Cobarde extends PersonajeConCordura{
   }
 }
 
-trait Inestable extends PersonajeConCordura{
+trait Inestable extends Personaje with PersonajeConCordura{
 
   override def perderCordura(cordura: Double) = {
     this.recibirDanio(1)
@@ -153,7 +153,7 @@ trait Inestable extends PersonajeConCordura{
 
 }
 
-trait Curandero extends  PersonajeConCordura {
+trait Curandero extends Personaje  {
   def curar() = {
     this.habitacion().personajeParaCurar().aumentarVidaActual(2)
   }
