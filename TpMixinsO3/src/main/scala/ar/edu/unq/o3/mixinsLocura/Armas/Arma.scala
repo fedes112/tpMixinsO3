@@ -3,7 +3,7 @@ package ar.edu.unq.o3.mixinsLocura.Armas
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
 import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
 
-trait  Arma extends  PoseeArma{
+trait  Arma {
 
   var _armaEquipada : Arma = null
 
@@ -123,7 +123,7 @@ trait Paulatino extends Arma {
   }
 
   override def danioDeArma(atacante: Personaje, defensor: Personaje): Double = {
-    (super.danioDeArma(atacante, defensor)) * (desgaste / 100)
+    (super.danioDeArma(atacante, defensor)) * (desgaste * 0.01)
   }
 
   override def atacarA(personajeAAtacar: Personaje, danio: Double, personajeQueAtaca: Personaje): Unit = {

@@ -4,7 +4,7 @@ import ar.edu.unq.o3.mixinsLocura.Armas.Arma
 import ar.edu.unq.o3.mixinsLocura.Cordura.PersonajeConCordura
 import ar.edu.unq.o3.mixinsLocura.Habitacion.Habitacion
 import ar.edu.unq.o3.mixinsLocura.MansionesUtils.randomIntBetween
-import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje, PoseeArma}
+import ar.edu.unq.o3.mixinsLocura.investigador.{Investigador, Personaje}
 
 abstract class Monstruo(vidaMonstruo: Double) extends Personaje(vidaMonstruo) {
 
